@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"out/lib-a.js",
+"lineCount":1,
+"mappings":"AAIAA,OAAAC,IAAA,CAAY,GAAZ,CCFOC,QAAY,EAAG,EDEtB;",
+"sources":["/Users/malteubl/ws/splittable/sample/lib/a.js","/Users/malteubl/ws/splittable/sample/lib/c.js"],
+"names":["console","log","foo$$module$$Users$malteubl$ws$splittable$sample$lib$c"]
+}

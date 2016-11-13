@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"out/_base.js",
+"lineCount":1,
+"mappings":"AAEAA,OAAAC,IAAA,CAAY,GAAZ,C,CCEAD,OAAAC,IAAA,CAAY,GAAZ;",
+"sources":["/Users/malteubl/ws/splittable/sample/lib/d.js","/Users/malteubl/ws/splittable/sample/lib/c.js"],
+"names":["console","log"]
+}
