@@ -65,6 +65,30 @@ t.test('module order with 2 modules', function(t) {
   });
 });
 
+t.test('module order with 2 modules and no overlap', function(t) {
+  return getGraph(['./sample/lib/d', './sample/lib/e']).then(function(g) {
+    jsonEqual(t, g.bundles, {
+      "_base": {
+        "name": "_base",
+        "modules": [
+        ]
+      },
+      "sample/lib/d.js": {
+        "name": "sample/lib/d.js",
+        "modules": [
+          "sample/lib/d.js"
+        ]
+      },
+      "sample/lib/e.js": {
+        "name": "sample/lib/e.js",
+        "modules": [
+          "sample/lib/e.js"
+        ]
+      }
+    });
+  });
+});
+
 t.test('accepts different module input syntax', function(t) {
   return getGraph(['sample/lib/b.js']).then(function(g) {
     jsonEqual(t, g.bundles, {

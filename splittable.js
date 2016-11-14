@@ -213,7 +213,7 @@ function setupBundles(graph) {
   });
 
   // No need for a base module if there was only one entry module.
-  if (graph.bundles._base.modules.length == 0) {
+  if (graph.entryModules.length == 1) {
     delete graph.bundles._base;
   }
 }
