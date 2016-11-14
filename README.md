@@ -44,6 +44,8 @@ The above will write 3 files (plus sourcemaps) to the directory `out`.
 - **Webpack**: Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code.
 - **Browserify**: See Webpack.
 
+This section is for entertainment only. All of the above bundlers certainly have dozens of other features that makes them more useful than splittable and/or could use splittable as plugin to get the best of all worlds.
+
 ## How does it work?
 
 Splittable is a wrapper around both browserify, babel and Closure Compiler. It uses the former 2 to resolve modules and their dependencies, and then uses Closure Compiler for efficient compilation of code.

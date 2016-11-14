@@ -61,7 +61,6 @@ exports.getFlags = function(config) {
     language_in: 'ES6',
     language_out: 'ES5',
     module_output_path_prefix: config.writeTo || 'out/',
-    output_module_dependencies: './modules.json',
   };
 
   // Turn object into deterministically sorted array.

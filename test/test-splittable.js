@@ -133,7 +133,6 @@ t.test('getFlags', function(t) {
       "--language_out", "ES5",
       "--module_output_path_prefix", "out/",
       "--new_type_inf", true,
-      "--output_module_dependencies", "./modules.json",
       "--process_common_js_modules", true,
       "--rewrite_polyfills", true,
       "--js", "sample/lib/d.js",
