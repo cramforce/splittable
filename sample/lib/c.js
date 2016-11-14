@@ -1,5 +1,7 @@
 import {d} from './d';
 
-export function foo() {}
+d();
+
+export function c() {}
 
 console.log('c');

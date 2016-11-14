@@ -2,7 +2,7 @@
 "version":3,
 "file":"out/lib-b.js",
 "lineCount":1,
-"mappings":"AAEAA,OAAAC,IAAA,CAAY,GAAZ;",
-"sources":["/Users/malteubl/ws/splittable/sample/lib/b.js"],
+"mappings":"AAIAA,OAAAC,IAAA,CAAY,GAAZ;",
+"sources":["lib/b.js"],
 "names":["console","log"]
 }

@@ -2,7 +2,7 @@
 "version":3,
 "file":"out/lib-a.js",
 "lineCount":1,
-"mappings":"AAIAA,OAAAC,IAAA,CAAY,GAAZ,CCFOC,QAAY,EAAG,EDEtB;",
-"sources":["/Users/malteubl/ws/splittable/sample/lib/a.js","/Users/malteubl/ws/splittable/sample/lib/c.js"],
-"names":["console","log","foo$$module$$Users$malteubl$ws$splittable$sample$lib$c"]
+"mappings":"AAAOA,QAASC,EAAC,EAAG,CAClB,MACEC,SAAW,EAAG,CACZC,OAAAC,IAAA,CAAYH,CAAZ,CADY,CAFE,C,CCClBE,OAAAC,IAAA,CAAY,GAAZ,CCIFD,QAAAC,IAAA,CFLgBH,CEKJ,EAAZ,CAEAE,QAAAC,IAAA,CAAY,GAAZ,CCHOC,QAAU,EAAG,EDGpB;",
+"sources":["lib/e.js","lib/d.js","lib/a.js","lib/c.js"],
+"names":["e$$module$lib$e","e","constructor","console","log","c$$module$lib$c"]
 }

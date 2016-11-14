@@ -2,13 +2,16 @@
   "name": "Splittable",
   "version": "1.0.0",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
-  "main": "splittable.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap test/*.js"
   },
   "author": "",
-  "license": "Apache 2.0",
-  "devDependencies": {},
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "json-stable-stringify": "^1.0.1",
+    "tap": "^8.0.0"
+  },
   "dependencies": {
     "babel-preset-es2015": "^6.18.0",
     "babelify": "^7.3.0",
@@ -16,7 +19,12 @@
     "browserify": "^13.1.1",
     "deps-sort": "^2.0.0",
     "dev-null": "^0.1.1",
+    "google-closure-compiler": "^20161024.3.0",
     "through2": "^2.0.1",
     "topological-sort": "^0.1.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cramforce/splittable.git"
   }
 }

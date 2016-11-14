@@ -1,5 +1,8 @@
-import {foo} from './c';
+import {c} from './c';
 import {d} from './d';
 import {e} from './e';
 
-console.log('a', foo);
+d();
+console.log(e());
+
+console.log('a', c);

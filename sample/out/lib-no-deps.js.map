@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"out/lib-no-deps.js",
+"lineCount":1,
+"mappings":"AAEAA,OAAAC,IAAA,CAAY,SAAAC,SAAA,CAAmB,UAAnB,CAAZ;",
+"sources":["lib/no-deps.js"],
+"names":["console","log","endsWith"]
+}

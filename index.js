@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-var splittable = require('../index');
-
-splittable({
-  modules: ['./lib/a', './lib/b', './lib/no-deps'],
-  writeTo: 'out/',
-}).then(function(info) {
-  console.info('Compilation successful');
-  if (info.warnings) {
-    console.warn(info.warnings);
-  }
-}, function(reason) {
-  console.error('Compilation failed', reason);
-});
+module.exports = require('./splittable').splittable;

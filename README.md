@@ -14,11 +14,22 @@ Splittable is a next-generation module bundler for JavaScript with support for
 ## Usage
 
 ```js
+
+var splittable = require('splittable');
+
 splittable({
   // Create bundles from 2 entry modules `./lib/a` and `./lib/b`.
   modules: ['./lib/a', './lib/b'],
   writeTo: 'out/',
+}).then(function(info) {
+  console.info('Compilation successful');
+  if (info.warnings) {
+    console.warn(info.warnings);
+  }
+}, function(reason) {
+  console.error('Compilation failed', reason);
 });
+
 ```
 
 The above will write 3 files (plus sourcemaps) to the directory `out`.

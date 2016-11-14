@@ -1,1 +1,7 @@
-export function foo() {}
+export function e() {
+  return class Foo {
+    constructor() {
+      console.log(e);
+    }
+  };
+}
