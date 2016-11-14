@@ -1,6 +1,6 @@
 {
   "name": "splittable",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,14 @@
   "bin": {
     "splittable": "bin.js"
   },
+  "keywords": [
+    "bundler",
+    "module",
+    "code splitting",
+    "commonjs",
+    "es6",
+    "closure compiler"
+  ],
   "author": "cramforce",
   "license": "Apache-2.0",
   "devDependencies": {

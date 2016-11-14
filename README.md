@@ -1,5 +1,3 @@
-** WARNING: Ultra hacky preview **
-
 # Splittable
 
 Splittable is a next-generation module bundler for JavaScript with support for
@@ -67,6 +65,8 @@ Splittable is a wrapper around both browserify, babel and Closure Compiler. It u
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
 ## How to load splittable bundles
+
+By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option). Load these bundles in your production application.
 
 Splittable currently doesn't come with a built-in code loader.
 
