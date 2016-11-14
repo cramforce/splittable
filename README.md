@@ -11,6 +11,8 @@ Splittable is a next-generation module bundler for JavaScript with support for
 
 ## Usage from the command line
 
+Requires java for one dependency to run.
+
 ### Installation
 
 `npm i -g splittable`
