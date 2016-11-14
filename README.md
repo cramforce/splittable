@@ -21,6 +21,10 @@ Splittable is a next-generation module bundler for JavaScript with support for
 
 `splittable path/to/module1 path/to/module2`
 
+and optionally specify destination directory for bundles
+
+`splittable path/to/module1 path/to/module2 --write-to=dist/`
+
 ## Usage from JS
 
 ```js
@@ -50,9 +54,9 @@ The above will write 3 files (plus sourcemaps) to the directory `out`.
 
 ## Isn't this like
 
-- **Rollup**: Yes, but it supports code splitting, CommonJS modules, and significantly more aggressive tree shaking. File sizes should typically be much smaller.
-- **Webpack**: Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code.
-- **Browserify**: See Webpack.
+- [**Rollup**](http://rollupjs.org/): Yes, but it supports code splitting, CommonJS modules, and significantly more aggressive tree shaking. File sizes should typically be much smaller.
+- [**Webpack**](https://webpack.github.io/): Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code.
+- [**Browserify**](http://browserify.org/): See Webpack.
 
 This section is for entertainment only. All of the above bundlers certainly have dozens of other features that makes them more useful than splittable and/or could use splittable as plugin to get the best of all worlds.
 
@@ -62,3 +66,11 @@ Splittable is a wrapper around both browserify, babel and Closure Compiler. It u
 
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
+## How to load splittable bundles
+
+Splittable currently doesn't come with a built-in code loader.
+
+Loading bundles should be easy, though:
+
+- Always load the `_base.js` bundle first or inline it into your initial page response.
+- Then load whatever other bundle you need via injected script tags.
