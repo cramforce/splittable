@@ -11,7 +11,17 @@ Splittable is a next-generation module bundler for JavaScript with support for
 - **dead code elimination** (also sometimes called **tree shaking**).
 - **smaller code** for real world projects than all other known module bundlers.
 
-## Usage
+## Usage from the command line
+
+### Installation
+
+`npm i -g splittable`
+
+### Run
+
+`splittable path/to/module1 path/to/module2`
+
+## Usage from JS
 
 ```js
 

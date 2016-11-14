@@ -1,6 +1,6 @@
 {
-  "name": "Splittable",
-  "version": "1.0.0",
+  "name": "splittable",
+  "version": "1.0.2",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "bin": {
     "splittable": "bin.js"
   },
-  "author": "Malte Ubl",
+  "author": "cramforce",
   "license": "Apache-2.0",
   "devDependencies": {
     "json-stable-stringify": "^1.0.1",
