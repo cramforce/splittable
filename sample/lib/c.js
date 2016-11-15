@@ -2,6 +2,8 @@ import {d} from './d';
 
 d();
 
-export function c() {}
+export function c() {
+  console.log('c export');
+}
 
-console.log('c');
+console.log('in c');

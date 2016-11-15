@@ -5,4 +5,4 @@ import {e} from './e';
 d();
 console.log(e());
 
-console.log('a', c);
+console.log('in a', c());

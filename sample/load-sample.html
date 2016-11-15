@@ -1,0 +1,26 @@
+<h1>View source<h1>
+
+<p>Check the console for some random output from the sample<p>
+
+<!-- Load splittable bundles with simple async script tags. Order doesn't matter. -->
+
+<!-- Always load the base bundle. -->
+<script async src="out/_base.js"></script>
+<!-- Then load other bundles as needed. -->
+<script async src="out/lib-a.js"></script>
+<script async src="out/lib-b.js"></script>
+
+<!-- Or alternatively use JS to load. This allows setting an onload handler. -->
+
+<script>
+  function load(src) {
+    var script = document.createElement('script');
+    script.src = src;
+    script.onload = function() {
+      console.log('dynamically loaded a script');
+    };
+    document.body.appendChild(script);
+  }
+
+  load('out/lib-no-deps.js');
+</script>

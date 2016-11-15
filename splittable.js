@@ -79,7 +79,9 @@ exports.getBundleFlags = function(g) {
   var flagsArray = [];
   // Build up the weird flag structure that closure compiler calls
   // modules and we call bundles.
-  Object.keys(g.bundles).sort().forEach(function(name) {
+  var bundleKeys = Object.keys(g.bundles);
+  bundleKeys.sort().forEach(function(name) {
+    var isBase = name == '_base';
     var bundle = g.bundles[name];
     // In each bundle, first list JS files that belong into it.
     bundle.modules.forEach(function(js) {
@@ -92,10 +94,19 @@ exports.getBundleFlags = function(g) {
     // And now build --module $name:$numberOfJsFiles:$bundleDeps
     var cmd = name + ':' + bundle.modules.length;
     // All non _base bundles depend on _base.
-    if (name != '_base' && g.bundles._base) {
+    if (!isBase && g.bundles._base) {
       cmd += ':_base';
     }
     flagsArray.push('--module', cmd);
+    if (bundleKeys.length > 1) {
+      if (isBase) {
+        flagsArray.push('--module_wrapper', name + ':' +
+            exports.baseBundleWrapper);
+      } else {
+        flagsArray.push('--module_wrapper', name + ':' +
+            exports.bundleWrapper);
+      }
+    }
   });
   return flagsArray;
 }
@@ -126,6 +137,7 @@ exports.getGraph = function(entryModules) {
     bundles: {
       // We always have a _base bundle.
       _base: {
+        isBase: true,
         name: '_base',
         // The modules in the bundle.
         modules: [],
@@ -205,6 +217,7 @@ function setupBundles(graph) {
     }
     if (!graph.bundles[dest]) {
       graph.bundles[dest] = {
+        isBase: false,
         name: dest,
         modules: [],
       };
@@ -217,3 +230,16 @@ function setupBundles(graph) {
     delete graph.bundles._base;
   }
 }
+
+// Don't wrap the bundle itself in a closure (other bundles need
+// to be able to see it), but add a little async executor for
+// scheduled functions.
+exports.baseBundleWrapper =
+    '%s\n(self._S=self._S||[]).push=function(f){f.call(self)};' +
+    '(function(f){while(f=self._S.shift()){f.call(self)}})();\n' +
+    '//# sourceMappingURL=%basename%.map\n';
+
+// Schedule or execute bundle via _S global.
+exports.bundleWrapper =
+    '(self._S=self._S||[]).push((function(){%s}));\n' +
+    '//# sourceMappingURL=%basename%.map\n';

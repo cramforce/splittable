@@ -2,4 +2,4 @@ var required = require('./c').c;
 
 required();
 
-console.log('b');
+console.log('in b');

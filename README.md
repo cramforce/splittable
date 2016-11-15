@@ -66,13 +66,16 @@ Splittable is a wrapper around both browserify, babel and Closure Compiler. It u
 
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
-## How to load splittable bundles
+## Loading splittable bundles
 
-By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option). Load these bundles in your production application.
+By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option).
 
-Splittable currently doesn't come with a built-in code loader.
+Loading splittable bundles is super straightforward with `async` script tags. You do not need to worry about the order in which they execute. Example:
 
-Loading bundles should be easy, though:
+```html
+<script async src="out/_base.js"></script>
+<script async src="out/lib-a.js"></script>
+<script async src="out/lib-b.js"></script>
+```
 
-- Always load the `_base.js` bundle first or inline it into your initial page response.
-- Then load whatever other bundle you need via injected script tags.
+For an example and advanced usage such as JS initiated loading see the [sample](sample/load-sample.html).

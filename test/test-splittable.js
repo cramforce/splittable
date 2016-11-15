@@ -19,6 +19,7 @@ var stringify = require('json-stable-stringify');
 var getGraph = require('../splittable').getGraph;
 var getBundleFlags = require('../splittable').getBundleFlags;
 var getFlags = require('../splittable').getFlags;
+var splittable = require('../splittable');
 
 function jsonEqual(t, a, b, message) {
   t.equal(
@@ -31,6 +32,7 @@ t.test('module order with 2 modules', function(t) {
   return getGraph(['./sample/lib/a', './sample/lib/b']).then(function(g) {
     jsonEqual(t, g.bundles, {
       "_base": {
+        "isBase": true,
         "name": "_base",
         "modules": [
           "sample/lib/d.js",
@@ -38,12 +40,14 @@ t.test('module order with 2 modules', function(t) {
         ]
       },
       "sample/lib/b.js": {
+        "isBase": false,
         "name": "sample/lib/b.js",
         "modules": [
           "sample/lib/b.js"
         ]
       },
       "sample/lib/a.js": {
+        "isBase": false,
         "name": "sample/lib/a.js",
         "modules": [
           "sample/lib/e.js",
@@ -56,11 +60,14 @@ t.test('module order with 2 modules', function(t) {
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--module", "_base:2",
+      "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
       "--js", "sample/lib/e.js",
       "--js", "sample/lib/a.js",
       "--module", "sample-lib-a:2:_base",
+      "--module_wrapper", "sample-lib-a:" + splittable.bundleWrapper,
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:1:_base"
+      "--module", "sample-lib-b:1:_base",
+      "--module_wrapper", "sample-lib-b:" + splittable.bundleWrapper,
     ]);
   });
 });
@@ -69,17 +76,20 @@ t.test('module order with 2 modules and no overlap', function(t) {
   return getGraph(['./sample/lib/d', './sample/lib/e']).then(function(g) {
     jsonEqual(t, g.bundles, {
       "_base": {
+        "isBase": true,
         "name": "_base",
         "modules": [
         ]
       },
       "sample/lib/d.js": {
+        "isBase": false,
         "name": "sample/lib/d.js",
         "modules": [
           "sample/lib/d.js"
         ]
       },
       "sample/lib/e.js": {
+        "isBase": false,
         "name": "sample/lib/e.js",
         "modules": [
           "sample/lib/e.js"
@@ -93,6 +103,7 @@ t.test('accepts different module input syntax', function(t) {
   return getGraph(['sample/lib/b.js']).then(function(g) {
     jsonEqual(t, g.bundles, {
       "sample/lib/b.js": {
+        "isBase": false,
         "name": "sample/lib/b.js",
         "modules": [
           "sample/lib/d.js",
@@ -106,7 +117,7 @@ t.test('accepts different module input syntax', function(t) {
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:3"
+      "--module", "sample-lib-b:3",
     ]);
   });
 });
@@ -116,6 +127,7 @@ t.test('module order with 3 modules', function(t) {
       './sample/lib/no-deps']).then(function(g) {
         jsonEqual(t, g.bundles, {
           "_base": {
+            "isBase": true,
             "name": "_base",
             "modules": [
               "sample/lib/d.js",
@@ -123,12 +135,14 @@ t.test('module order with 3 modules', function(t) {
             ]
           },
           "sample/lib/b.js": {
+            "isBase": false,
             "name": "sample/lib/b.js",
             "modules": [
               "sample/lib/b.js"
             ]
           },
           "sample/lib/a.js": {
+            "isBase": false,
             "name": "sample/lib/a.js",
             "modules": [
               "sample/lib/e.js",
@@ -136,6 +150,7 @@ t.test('module order with 3 modules', function(t) {
             ]
           },
           "sample/lib/no-deps.js": {
+            "isBase": false,
             "modules": [
              "sample/lib/no-deps.js"
             ],
@@ -162,7 +177,7 @@ t.test('getFlags', function(t) {
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:3"
+      "--module", "sample-lib-b:3",
     ]);
   });
 });
