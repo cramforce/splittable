@@ -55,7 +55,7 @@ The above will write 3 files (plus sourcemaps) to the directory `out`.
 ## Isn't this like
 
 - [**Rollup**](http://rollupjs.org/): Yes, but it supports code splitting, CommonJS modules, and significantly more aggressive tree shaking. File sizes should typically be much smaller.
-- [**Webpack**](https://webpack.github.io/): Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code.
+- [**Webpack**](https://webpack.github.io/): Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code. It has way more features, though, and is more mature, so may still be a win.
 - [**Browserify**](http://browserify.org/): See Webpack.
 
 This section is for entertainment only. All of the above bundlers certainly have dozens of other features that makes them more useful than splittable and/or could use splittable as plugin to get the best of all worlds.
