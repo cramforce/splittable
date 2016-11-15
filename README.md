@@ -52,6 +52,20 @@ The above will write 3 files (plus sourcemaps) to the directory `out`.
 2. A bundle of `./lib/b` and its dependencies.
 3. A bundle called `_base.js` that contains the shared dependencies of the entry modules.
 
+## Loading splittable bundles
+
+By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option).
+
+Loading splittable bundles is super straightforward with `async` script tags. You do not need to worry about the order in which they execute. Example:
+
+```html
+<script async src="out/_base.js"></script>
+<script async src="out/lib-a.js"></script>
+<script async src="out/lib-b.js"></script>
+```
+
+For an example and advanced usage such as JS initiated loading see the [sample](sample/load-sample.html).
+
 ## Isn't this like
 
 - [**Rollup**](http://rollupjs.org/): Yes, but it supports code splitting, CommonJS modules, and significantly more aggressive tree shaking. File sizes should typically be much smaller.
@@ -66,16 +80,9 @@ Splittable is a wrapper around both browserify, babel and Closure Compiler. It u
 
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
-## Loading splittable bundles
+## Possible improvements
 
-By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option).
+- Splittable currently pollutes the global scope with lots of symbols, so that they are visible across modules. This could be fixed with `--rename_prefix_namespace` at the trade off of slightly more verbose generated code.
+- Splittable only supports one layer of bundle hierarchy. This can lead to an extremely bloated base bundle. Multiple layers could be supported at the price of greater complexity in several dimensions.
+- Switch Closure Compiler to the JS-only version (cut Java dependency). This requires adding support for code splitting to the JS version.
 
-Loading splittable bundles is super straightforward with `async` script tags. You do not need to worry about the order in which they execute. Example:
-
-```html
-<script async src="out/_base.js"></script>
-<script async src="out/lib-a.js"></script>
-<script async src="out/lib-b.js"></script>
-```
-
-For an example and advanced usage such as JS initiated loading see the [sample](sample/load-sample.html).
