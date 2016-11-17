@@ -21,6 +21,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "d3-array": "^1.0.1",
+    "d3-shape": "^1.0.3",
     "fs-extra": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
     "tap": "^8.0.0"

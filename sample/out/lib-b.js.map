@@ -2,7 +2,7 @@
 "version":3,
 "file":"out/lib-b.js",
 "lineCount":1,
-"mappings":"A,uCAIgBA,CCFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ;",
+"mappings":"A,uCAIgBA,ECFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ;",
 "sources":["lib/c.js","lib/b.js"],
 "names":["c","console","log"]
 }

@@ -130,16 +130,22 @@ t.test('module roots', function(t) {
         "name": "sample/lib/other-module-root.js",
         "modules": [
           "node_modules/d3-array/build/d3-array.js",
-          "sample/lib/other-module-root.js"
+          "node_modules/d3-path/build/d3-path.js",
+          "node_modules/d3-shape/build/d3-shape.js",
+          "sample/lib/other-module-root.js",
         ]
       },
     });
 
     jsonEqual(t, getBundleFlags(g), [
       "--js", "node_modules/d3-array/build/d3-array.js",
+      "--js", "node_modules/d3-path/build/d3-path.js",
+      "--js", "node_modules/d3-shape/build/d3-shape.js",
       "--js", "sample/lib/other-module-root.js",
-      "--module", "sample-lib-other-module-root:2",
+      "--module", "sample-lib-other-module-root:4",
       "--js_module_root", "node_modules/d3-array/build",
+      "--js_module_root", "node_modules/d3-path/build",
+      "--js_module_root", "node_modules/d3-shape/build"
     ]);
   });
 });
