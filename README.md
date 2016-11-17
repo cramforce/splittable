@@ -19,11 +19,11 @@ Requires java for one dependency to run.
 
 ### Run
 
-`splittable path/to/module1 path/to/module2`
+`splittable path/to/module1.js path/to/module2.js`
 
 and optionally specify destination directory for bundles
 
-`splittable path/to/module1 path/to/module2 --write-to=dist/`
+`splittable path/to/module1.js path/to/module2.js --write-to=dist/`
 
 ## Usage from JS
 
@@ -69,14 +69,14 @@ For an example and advanced usage such as JS initiated loading see the [sample](
 ## Isn't this like
 
 - [**Rollup**](http://rollupjs.org/): Yes, but it supports code splitting, CommonJS modules, and significantly more aggressive tree shaking. File sizes should typically be much smaller.
-- [**Webpack**](https://webpack.github.io/): Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code. It has way more features, though, and is more mature, so may still be a win.
-- [**Browserify**](http://browserify.org/): See Webpack.
+- [**Webpack**](https://webpack.github.io/): Webpack has way bigger scope, but could possibly use Splittable as a plugin. In general, Webpack will generate significantly less efficient and much bigger code. It does, however, support multiple layers of bundle dependencies which will often result in smaller portions of the application being downloaded in initial bundles. It also has way more features, though, and is more mature, so may still be a win.
+- [**Browserify**](http://browserify.org/): Similar to Webpack, browserify generates less efficient code and comes with an awesome ecosystem of plugins.
 
 This section is for entertainment only. All of the above bundlers certainly have dozens of other features that makes them more useful than splittable and/or could use splittable as plugin to get the best of all worlds.
 
 ## How does it work?
 
-Splittable is a wrapper around both browserify, babel and Closure Compiler. It uses the former 2 to resolve modules and their dependencies, and then uses Closure Compiler for efficient compilation of code.
+Splittable is a wrapper around both [**Browserify**](http://browserify.org/), [Babel](https://babeljs.io/) and [Closure Compiler](https://github.com/google/closure-compiler). It uses the former 2 to resolve modules and their dependencies, and then uses Closure Compiler for efficient compilation of code.
 
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
