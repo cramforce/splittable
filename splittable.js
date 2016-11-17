@@ -148,7 +148,7 @@ exports.getGraph = function(entryModules) {
 
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {debug: true, deps: true})
-      .transform(babel, {plugins: ["transform-es2015-modules-commonjs"]});
+      .transform(babel, {plugins: [require.resolve("transform-es2015-modules-commonjs")]});
   // This gets us the actual deps.
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
     var id = relativePath(process.cwd(), row.id);
