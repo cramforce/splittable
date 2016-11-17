@@ -21,6 +21,7 @@ var browserify = require('browserify');
 var through = require('through2');
 var devnull = require('dev-null');
 var relativePath = require('path').relative;
+var path = require('path')
 const TopologicalSort = require('topological-sort');
 
 exports.splittable = function(config) {
@@ -108,6 +109,9 @@ exports.getBundleFlags = function(g) {
       }
     }
   });
+  Object.keys(g.moduleRoots).sort().forEach(function(root) {
+    flagsArray.push('--js_module_root', root);
+  })
   return flagsArray;
 }
 
@@ -143,6 +147,7 @@ exports.getGraph = function(entryModules) {
         modules: [],
       },
     },
+    moduleRoots: {},
   };
   var edges = {};
 
@@ -151,13 +156,21 @@ exports.getGraph = function(entryModules) {
       .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
   // This gets us the actual deps.
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
-    var id = relativePath(process.cwd(), row.id);
-    if (!id.endsWith('.js')) {
-      id += '.js'
-    }
+    var id = maybeAddDotJs(relativePath(process.cwd(), row.id));
     topo.addNode(id, id);
-    var deps = edges[id] = Object.keys(row.deps).map(function(i) {
-      return relativePath(process.cwd(), row.deps[i]);
+    var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
+      var depId = row.deps[dep];
+      var relPathtoDep = relativePath(process.cwd(), row.deps[dep]);
+
+      if (!/^\./.test(dep)) {
+        var dirCount = dep.split(/\//);
+        var moduleRoot = path.dirname(relPathtoDep);
+        for (var i = 0; i < dirCount; i++) {
+          moduleRoot = path.dirname(moduleRoot);
+        }
+        graph.moduleRoots[moduleRoot] = true;
+      }
+      return relPathtoDep;
     });
     graph.deps[id] = deps;
     if (row.entry) {
@@ -229,6 +242,13 @@ function setupBundles(graph) {
   if (graph.entryModules.length == 1) {
     delete graph.bundles._base;
   }
+}
+
+function maybeAddDotJs(id) {
+  if (!id.endsWith('.js')) {
+    id += '.js'
+  }
+  return id;
 }
 
 // Don't wrap the bundle itself in a closure (other bundles need

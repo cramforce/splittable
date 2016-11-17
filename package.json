@@ -1,6 +1,6 @@
 {
   "name": "splittable",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
   "author": "cramforce",
   "license": "Apache-2.0",
   "devDependencies": {
+    "d3-array": "^1.0.1",
     "fs-extra": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
     "tap": "^8.0.0"
