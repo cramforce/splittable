@@ -122,6 +122,28 @@ t.test('accepts different module input syntax', function(t) {
   });
 });
 
+t.test('module roots', function(t) {
+  return getGraph(['sample/lib/other-module-root']).then(function(g) {
+    jsonEqual(t, g.bundles, {
+      "sample/lib/other-module-root.js": {
+        "isBase": false,
+        "name": "sample/lib/other-module-root.js",
+        "modules": [
+          "node_modules/d3-array/build/d3-array.js",
+          "sample/lib/other-module-root.js"
+        ]
+      },
+    });
+
+    jsonEqual(t, getBundleFlags(g), [
+      "--js", "node_modules/d3-array/build/d3-array.js",
+      "--js", "sample/lib/other-module-root.js",
+      "--module", "sample-lib-other-module-root:2",
+      "--js_module_root", "node_modules/d3-array/build",
+    ]);
+  });
+});
+
 t.test('module order with 3 modules', function(t) {
   return getGraph(['./sample/lib/a', './sample/lib/b',
       './sample/lib/no-deps']).then(function(g) {

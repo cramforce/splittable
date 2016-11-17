@@ -19,7 +19,7 @@
 var splittable = require('../index');
 
 splittable({
-  modules: [/*'./lib/a', './lib/b', './lib/no-deps',*/ './lib/index-module'],
+  modules: ['./lib/a', './lib/b', './lib/no-deps', './lib/other-module-root'],
   writeTo: 'out/',
 }).then(function(info) {
   console.info('Compilation successful');

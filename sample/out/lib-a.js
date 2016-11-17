@@ -1,3 +1,3 @@
-(self._S=self._S||[]).push((function(){function q(){return function(){console.log(q)}};console.log("d export");console.log(q());console.log("in a",p());}));
+(self._S=self._S||[]).push((function(){function F(){return function(){console.log(F)}};console.log("d export");console.log(F());console.log("in a",E());}));
 //# sourceMappingURL=lib-a.js.map
 

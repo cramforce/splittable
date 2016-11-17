@@ -1,3 +1,3 @@
-(self._S=self._S||[]).push((function(){p();console.log("in b");}));
+(self._S=self._S||[]).push((function(){E();console.log("in b");}));
 //# sourceMappingURL=lib-b.js.map
 
