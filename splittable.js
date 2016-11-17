@@ -109,7 +109,7 @@ exports.getBundleFlags = function(g) {
       }
     }
   });
-  Object.keys(g.moduleRoots).sort().forEach(function(root) {
+  Object.keys(g.moduleRoots).sort().reverse().forEach(function(root) {
     flagsArray.push('--js_module_root', root);
   })
   return flagsArray;
@@ -162,9 +162,16 @@ exports.getGraph = function(entryModules) {
       var depId = row.deps[dep];
       var relPathtoDep = relativePath(process.cwd(), row.deps[dep]);
 
+      // Non relative module path. Try to find module root.
       if (!/^\./.test(dep)) {
-        var dirCount = dep.split(/\//);
         var moduleRoot = path.dirname(relPathtoDep);
+        // Index path can be resolved by CC, so go one level up.
+        if (relPathtoDep.endsWith('index')
+            || relPathtoDep.endsWith('index.js')) {
+          moduleRoot = path.dirname(moduleRoot);
+        }
+        // Go on level up per dir in module name.
+        var dirCount = dep.split(/\//);
         for (var i = 0; i < dirCount; i++) {
           moduleRoot = path.dirname(moduleRoot);
         }
