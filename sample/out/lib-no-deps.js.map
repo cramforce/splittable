@@ -2,7 +2,7 @@
 "version":3,
 "file":"out/lib-no-deps.js",
 "lineCount":1,
-"mappings":"A,uCAEAA,OAAAC,IAAA,CAAY,SAAAC,SAAA,CAAmB,UAAnB,CAAZ;",
-"sources":["lib/no-deps.js"],
-"names":["console","log","endsWith"]
+"mappings":"A,uCAEAA,OAAAC,IAAA,CAAY,SAAAC,SAAA,CAAmB,UAAnB,CAAZ,C,CCDA,CAACC,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,kBAA5B,CAAA,CDCCC;",
+"sources":["lib/no-deps.js","../../../../../var/folders/jk/j0ymfl3j6nj3w3k6_ngj7gfh003p7j/T/tmp-492642nj3WoDKQ4Th.tmp"],
+"names":["console","log","endsWith","self","module$lib$no_deps"]
 }

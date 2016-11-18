@@ -37,6 +37,7 @@
     "google-closure-compiler": "^20161024.3.0",
     "minimist": "^1.2.0",
     "through2": "^2.0.1",
+    "tmp": "0.0.30",
     "topological-sort": "^0.1.5"
   },
   "repository": {
