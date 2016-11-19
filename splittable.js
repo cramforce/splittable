@@ -30,7 +30,7 @@ exports.splittable = function(config) {
   if (!config || !config.modules) {
     return Promise.reject(
         new Error('Pass an array of entry modules via modules option. ' +
-            'Example: {modules: ["./first", "./secomd"]}'));
+            'Example: {modules: ["./first", "./second"]}'));
   }
 
   return exports.getFlags(config).then(function(flagsArray) {
