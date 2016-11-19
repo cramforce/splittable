@@ -56,17 +56,19 @@ t.test('module order with 2 modules', function(t) {
       }
     });
 
-    jsonEqual(t, getBundleFlags(g), [
+    jsonEqual(t, makeVariableFileNamesConsistent(getBundleFlags(g)), [
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--module", "_base:2",
       "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
       "--js", "sample/lib/e.js",
       "--js", "sample/lib/a.js",
-      "--module", "sample-lib-a:2:_base",
+      "--js", "$TMP_FILE",
+      "--module", "sample-lib-a:3:_base",
       "--module_wrapper", "sample-lib-a:" + splittable.bundleWrapper,
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:1:_base",
+      "--js", "$TMP_FILE",
+      "--module", "sample-lib-b:2:_base",
       "--module_wrapper", "sample-lib-b:" + splittable.bundleWrapper,
     ]);
   });
@@ -196,9 +198,10 @@ t.test('getFlags', function(t) {
       modules: ['./sample/lib/b']
     }).then(function(flags) {
 
-    jsonEqual(t, flags, [
+    jsonEqual(t, makeVariableFileNamesConsistent(flags), [
       "--compilation_level", "ADVANCED",
       "--create_source_map", "%outname%.map",
+      "--externs", "$splittable.extern.js",
       "--language_in", "ES6",
       "--language_out", "ES5",
       "--module_output_path_prefix", "out/",
@@ -212,3 +215,15 @@ t.test('getFlags', function(t) {
     ]);
   });
 });
+
+function makeVariableFileNamesConsistent(flagsArray) {
+  for (var i = 0; i < flagsArray.length; i++) {
+    if (/splittable\.extern\.js$/.test(flagsArray[i])) {
+      flagsArray[i] = '$splittable.extern.js';
+    }
+    if (/\.tmp$/.test(flagsArray[i])) {
+      flagsArray[i] = '$TMP_FILE';
+    }
+  }
+  return flagsArray;
+}

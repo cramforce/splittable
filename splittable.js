@@ -21,7 +21,8 @@ var browserify = require('browserify');
 var through = require('through2');
 var devnull = require('dev-null');
 var relativePath = require('path').relative;
-var path = require('path')
+var path = require('path');
+var fs = require('fs');
 const TopologicalSort = require('topological-sort');
 
 exports.splittable = function(config) {
@@ -62,6 +63,7 @@ exports.getFlags = function(config) {
     language_in: 'ES6',
     language_out: 'ES5',
     module_output_path_prefix: config.writeTo || 'out/',
+    externs: path.dirname(module.filename) + '/splittable.extern.js',
   };
 
   // Turn object into deterministically sorted array.
@@ -83,17 +85,22 @@ exports.getBundleFlags = function(g) {
   var bundleKeys = Object.keys(g.bundles);
   bundleKeys.sort().forEach(function(name) {
     var isBase = name == '_base';
+    var extraModules = 0;
     var bundle = g.bundles[name];
     // In each bundle, first list JS files that belong into it.
     bundle.modules.forEach(function(js) {
       flagsArray.push('--js', js);
     });
+    if (!isBase && bundleKeys.length > 1) {
+      flagsArray.push('--js', bundleTrailModule(bundle.name));
+      extraModules++;
+    }
     // Replace directory separator with - in bundle filename
     var name = bundle.name
         .replace(/\.js$/g, '')
         .replace(/[\/\\]/g, '-');
     // And now build --module $name:$numberOfJsFiles:$bundleDeps
-    var cmd = name + ':' + bundle.modules.length;
+    var cmd = name + ':' + (bundle.modules.length + extraModules);
     // All non _base bundles depend on _base.
     if (!isBase && g.bundles._base) {
       cmd += ':_base';
@@ -258,11 +265,36 @@ function maybeAddDotJs(id) {
   return id;
 }
 
+function bundleTrailModule(name) {
+  var tmp = require('tmp').fileSync();
+
+  var js = '// Generated code to get module ' + name + '\n' +
+      '(self["_S"]=self["_S"]||[])["//' + name + '"]=' +
+      'require("' + name + '")\n';
+  fs.writeFileSync(tmp.name, js, 'utf8');
+  return relativePath(process.cwd(), tmp.name);
+}
+
+var systemImport =
+    // Polyfill and/or monkey patch System.import.
+    '(self.System=self.System||{}).import=function(n){' +
+    'n=n.replace(/\\.js$/g,"")+".js";' +
+    'return (self._S["//"+n]&&Promise.resolve(self._S["//"+n]))' +
+    '||self._S[n]||(self._S[n]=new Promise(function(r,t){' +
+    'var s=document.createElement("script");' +
+    's.src=(self.System.baseURL||".")+"/"+n.replace(/[\\/\\\\]/g,"-");' +
+    's.onerror=t;s.onload=function(){r(self._S["//"+n])};' +
+    '(document.head||document.documentElement).appendChild(s);' +
+    '})' +
+    ')};\n';
+
 // Don't wrap the bundle itself in a closure (other bundles need
 // to be able to see it), but add a little async executor for
 // scheduled functions.
 exports.baseBundleWrapper =
-    '%s\n(self._S=self._S||[]).push=function(f){f.call(self)};' +
+    '%s\n' +
+    systemImport +
+    '(self._S=self._S||[]).push=function(f){f.call(self)};' +
     '(function(f){while(f=self._S.shift()){f.call(self)}})();\n' +
     '//# sourceMappingURL=%basename%.map\n';
 
