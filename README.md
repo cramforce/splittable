@@ -54,6 +54,23 @@ The above will write 3 files (plus sourcemaps) to the directory `out`.
 
 ## Loading splittable bundles
 
+### `System.import`
+
+The generated `_base.js` bundle ships with a `System.import` polyfill. It can be used to load modules exposed as bundles via splittable.
+
+```
+System.baseURL = '/path/to/bundles/';
+System.import('module/path').then(function(module) {
+  module.exportedFunction();
+})
+```
+
+`module/path` must be a path to a module as used in your splittable command line config or JS calls. It is **not** a relative path with respect to the actual JS module you call this from.
+
+`System.baseURL = '/path/to/bundles/';` must be supplied, so the loader knows where to find the bundles. This should be the directory, where you deployed your splittable bundles.
+
+### Via async script tags
+
 By default bundles are generated into the `out/` directory (can be overridden via `writeTo` option).
 
 Loading splittable bundles is super straightforward with `async` script tags. You do not need to worry about the order in which they execute. Example:
