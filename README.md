@@ -58,7 +58,7 @@ By default bundles are generated into the `out/` directory (can be overridden vi
 
 ### `System.import`
 
-The generated `_base.js` bundle ships with a [`System.import`](http://exploringjs.com/es6/ch_modules.html#_loader-method-importing-modules) polyfill. It can be used to load modules exposed as bundles via splittable.
+The generated `_base.js` bundle ships with a [`System.import`](http://exploringjs.com/es6/ch_modules.html#_loader-method-importing-modules) polyfill. It can be used to load modules exposed as bundles via splittable. The `System.import` function returns a promise for an object that exposes the exports of the loaded module.
 
 ```JS
 System.baseURL = '/path/to/bundles/';
