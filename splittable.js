@@ -163,11 +163,11 @@ exports.getGraph = function(entryModules) {
       .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
   // This gets us the actual deps.
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
-    var id = maybeAddDotJs(relativePath(process.cwd(), row.id));
+    var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
     topo.addNode(id, id);
     var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
       var depId = row.deps[dep];
-      var relPathtoDep = relativePath(process.cwd(), row.deps[dep]);
+      var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
 
       // Non relative module path. Try to find module root.
       if (!/^\./.test(dep)) {
@@ -273,6 +273,10 @@ function bundleTrailModule(name) {
       'require("' + name + '")\n';
   fs.writeFileSync(tmp.name, js, 'utf8');
   return relativePath(process.cwd(), tmp.name);
+}
+
+function unifyPath(id) {
+  return id.split(path.sep).join('/');
 }
 
 var systemImport =
