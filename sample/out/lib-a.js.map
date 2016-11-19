@@ -1,8 +1,0 @@
-{
-"version":3,
-"file":"out/lib-a.js",
-"lineCount":1,
-"mappings":"A,uCAAOA,QAASC,GAAC,EAAG,CAClB,MACEC,SAAW,EAAG,CACZC,OAAAC,IAAA,CAAYH,EAAZ,CADY,CAFE,C,CCAnB,IAAA,GAAA,ECCCE,QAAAC,IAAA,CAAY,UAAZ,CDIFD,QAAAC,IAAA,CDLgBH,ECKJ,EAAZ,CAEAE,QAAAC,IAAA,CAAY,MAAZ,CEHgBC,EFGI,EAApB,CAEgBC,GAAAC,KAAA,CAATC,QAAa,EAAG,CACrBL,OAAAC,IAAA,CAAY,UAAZ,CADqB,C,CGRvB,CAACK,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,YAA5B,CAAA,CAA0CH;",
-"sources":["lib/e.js","lib/a.js","lib/d.js","lib/c.js","../../../../../var/folders/jk/j0ymfl3j6nj3w3k6_ngj7gfh003p7j/T/tmp-49264MP3AUDmpvKu1.tmp"],
-"names":["e$$module$lib$e","e","constructor","console","log","c","module$lib$a","test","test$$module$lib$a","self"]
-}

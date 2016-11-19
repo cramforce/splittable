@@ -91,7 +91,7 @@ exports.getBundleFlags = function(g) {
     bundle.modules.forEach(function(js) {
       flagsArray.push('--js', js);
     });
-    if (!isBase) {
+    if (!isBase && bundleKeys.length > 1) {
       flagsArray.push('--js', bundleTrailModule(bundle.name));
       extraModules++;
     }
@@ -276,23 +276,26 @@ function bundleTrailModule(name) {
 }
 
 var systemImport =
+    // Polyfill and/or monkey patch System.import.
     '(self.System=self.System||{}).import=function(n){' +
-    'return self._S[n]||(self._S[n]=new Promise(function(r,t){' +
     'n=n.replace(/\\.js$/g,"")+".js";' +
+    'return (self._S["//"+n]&&Promise.resolve(self._S["//"+n]))' +
+    '||self._S[n]||(self._S[n]=new Promise(function(r,t){' +
     'var s=document.createElement("script");' +
-    's.src=(System.baseURL||".")+"/"+n.replace(/[\\/\\\\]/g,"-");' +
+    's.src=(self.System.baseURL||".")+"/"+n.replace(/[\\/\\\\]/g,"-");' +
     's.onerror=t;s.onload=function(){r(self._S["//"+n])};' +
-    'document.head.appendChild(s);' +
+    '(document.head||document.documentElement).appendChild(s);' +
     '})' +
-    ')}\n';
+    ')};\n';
 
 // Don't wrap the bundle itself in a closure (other bundles need
 // to be able to see it), but add a little async executor for
 // scheduled functions.
 exports.baseBundleWrapper =
-    '%s\n(self._S=self._S||[]).push=function(f){f.call(self)};' +
-    '(function(f){while(f=self._S.shift()){f.call(self)}})();\n' +
+    '%s\n' +
     systemImport +
+    '(self._S=self._S||[]).push=function(f){f.call(self)};' +
+    '(function(f){while(f=self._S.shift()){f.call(self)}})();\n' +
     '//# sourceMappingURL=%basename%.map\n';
 
 // Schedule or execute bundle via _S global.

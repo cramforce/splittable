@@ -16,11 +16,16 @@
  * limitations under the License.
  */
 
-var splittable = require('../index');
+var splittable = require('./index');
 
 splittable({
-  modules: ['./lib/a', './lib/b', './lib/no-deps', './lib/other-module-root'],
-  writeTo: 'out/',
+  modules: [
+    './sample/lib/a',
+    './sample/lib/b',
+    './sample/lib/no-deps',
+    './sample/lib/other-module-root',
+  ],
+  writeTo: './sample/out/',
 }).then(function(info) {
   console.info('Compilation successful');
   if (info.warnings) {

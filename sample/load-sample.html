@@ -7,13 +7,13 @@
 <!-- Always load the base bundle. -->
 <script src="out/_base.js"></script>
 <!-- Then load other bundles as needed. -->
-<script async src="out/lib-b.js"></script>
+<script async src="out/sample-lib-b.js"></script>
 
 <!-- Or alternatively use JS to load. This allows setting an onload handler. -->
 
 <script>
   System.baseURL = 'out/';
-  System.import('lib/a').then(function(module) {
+  System.import('sample/lib/a').then(function(module) {
     module.test();
   })
 </script>

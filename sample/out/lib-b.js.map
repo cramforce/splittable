@@ -1,8 +1,0 @@
-{
-"version":3,
-"file":"out/lib-b.js",
-"lineCount":1,
-"mappings":"A,uCAIgBA,ECFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ,CAEAC,OAAAC,OAAA,CAAc,OAAd,CAAAC,KAAA,CAA4B,QAAQ,CAACC,CAAD,CAAS,CAC3CA,CAAAC,KAAA,EAD2C,CAA7C,C,CCLA,CAACC,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,YAA5B,CAAA,CDDCC;",
-"sources":["lib/c.js","lib/b.js","../../../../../var/folders/jk/j0ymfl3j6nj3w3k6_ngj7gfh003p7j/T/tmp-49264MEPMla3CY9r0.tmp"],
-"names":["c","console","log","System","import","then","module","test","self","module$lib$b"]
-}
