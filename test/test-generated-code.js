@@ -140,6 +140,6 @@ t.test('generated code JS API', function(t) {
 t.test('generated code command line', function(t) {
   fs.emptyDirSync('test-out/');
   child.execSync(
-      './bin.js ./sample/lib/a ./sample/lib/b --write-to=test-out/');
+      'node ./bin.js ./sample/lib/a ./sample/lib/b --write-to=test-out/');
   return testGeneratedCode(t);
 });
