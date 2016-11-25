@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cramforce/splittable.svg?branch=master)](https://travis-ci.org/cramforce/splittable)
+
 # Splittable
 
 Splittable is a next-generation module bundler for JavaScript with support for
