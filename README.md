@@ -73,6 +73,8 @@ System.import('module/path').then(function(module) {
 
 `System.baseURL = '/path/to/bundles/';` must be supplied, so the loader knows where to find the bundles. This should be the directory, where you deployed your splittable bundles.
 
+Note: The polyfill requires promises. If you chose to use `System.import` and are targeting older browsers, please supply your own polyfill such as [PJS](https://github.com/jridgewell/PJs).
+
 ### Via async script tags
 
 Loading splittable bundles is super straightforward with `async` script tags. You do not need to worry about the order in which they execute. Example:

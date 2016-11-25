@@ -25,6 +25,10 @@ var path = require('path');
 var fs = require('fs');
 const TopologicalSort = require('topological-sort');
 
+// Override to local closure compiler JAR
+ClosureCompiler.JAR_PATH = require.resolve(
+    './third_party/closure-compiler/closure-compiler-1.0-SNAPSHOT.jar');
+
 exports.splittable = function(config) {
 
   if (!config || !config.modules) {
@@ -170,7 +174,7 @@ exports.getGraph = function(entryModules) {
       var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
 
       // Non relative module path. Try to find module root.
-      if (!/^\./.test(dep)) {
+      /*if (!/^\./.test(dep)) {
         var moduleRoot = path.dirname(relPathtoDep);
         // Index path can be resolved by CC, so go one level up.
         if (relPathtoDep.endsWith('index')
@@ -183,7 +187,7 @@ exports.getGraph = function(entryModules) {
           moduleRoot = path.dirname(moduleRoot);
         }
         graph.moduleRoots[moduleRoot] = true;
-      }
+      }*/
       return relPathtoDep;
     });
     graph.deps[id] = deps;
@@ -266,11 +270,11 @@ function maybeAddDotJs(id) {
 }
 
 function bundleTrailModule(name) {
-  var tmp = require('tmp').fileSync();
+  var tmp = require('tmp').fileSync({ template: './tmp/tmp-XXXXXX.js' });
 
   var js = '// Generated code to get module ' + name + '\n' +
       '(self["_S"]=self["_S"]||[])["//' + name + '"]=' +
-      'require("' + name + '")\n';
+      'require("' + relativePath(path.dirname(tmp.name), name) + '")\n';
   fs.writeFileSync(tmp.name, js, 'utf8');
   return relativePath(process.cwd(), tmp.name);
 }

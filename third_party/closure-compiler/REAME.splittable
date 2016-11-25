@@ -1,0 +1,7 @@
+Compiled from https://github.com/google/closure-compiler
+at b11c9970d87579ae50cee7dcda771ac726c71867
+
+Reasons to not use release:
+
+- Need c4a104075d40dd2191b45de33d00b79edd45b97e
+
