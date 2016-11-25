@@ -17,11 +17,35 @@
  */
 
 var argv = require('minimist')(process.argv.slice(2));
-
 var splittable = require('./index');
+var fs = require('fs');
 
+
+var USAGE =
+    'Usage: splittable [options] path/to/module1.js path/to/module2.js\n\n' +
+    'Options:\n' +
+    '  --write-to    Directory to which the output bundles are written.';
+
+var modules = argv._;
+
+if (argv['h'] || argv['help']) {
+  console.log(USAGE);
+  process.exit(0);
+}
+
+if (argv['v'] || argv['version']) {
+  console.log(require('./package.json').version);
+  process.exit(0);
+}
+
+if (!modules.length) {
+  console.log(USAGE);
+  process.exit(1);
+}
+
+// Bundle using splittable.
 splittable({
-  modules: argv._,
+  modules: modules,
   writeTo: argv['write-to'],
 }).then(function(info) {
   if (info.warnings) {
