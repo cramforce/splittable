@@ -50,6 +50,7 @@ t.test('module order with 2 modules', function(t) {
         "isBase": false,
         "name": "sample/lib/a.js",
         "modules": [
+          "sample/lib/has-only-one-dependency.js",
           "sample/lib/e.js",
           "sample/lib/a.js"
         ]
@@ -61,10 +62,11 @@ t.test('module order with 2 modules', function(t) {
       "--js", "sample/lib/c.js",
       "--module", "_base:2",
       "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
+      "--js", "sample/lib/has-only-one-dependency.js",
       "--js", "sample/lib/e.js",
       "--js", "sample/lib/a.js",
       "--js", "$TMP_FILE",
-      "--module", "sample-lib-a:3:_base",
+      "--module", "sample-lib-a:4:_base",
       "--module_wrapper", "sample-lib-a:" + splittable.bundleWrapper,
       "--js", "sample/lib/b.js",
       "--js", "$TMP_FILE",
@@ -94,6 +96,7 @@ t.test('module order with 2 modules and no overlap', function(t) {
         "isBase": false,
         "name": "sample/lib/e.js",
         "modules": [
+          "sample/lib/has-only-one-dependency.js",
           "sample/lib/e.js"
         ]
       }
@@ -181,6 +184,7 @@ t.test('module order with 3 modules', function(t) {
             "isBase": false,
             "name": "sample/lib/a.js",
             "modules": [
+              "sample/lib/has-only-one-dependency.js",
               "sample/lib/e.js",
               "sample/lib/a.js"
             ]
