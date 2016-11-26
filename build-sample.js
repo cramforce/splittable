@@ -27,10 +27,11 @@ splittable({
   ],
   writeTo: './sample/out/',
 }).then(function(info) {
-  console.info('Compilation successful');
   if (info.warnings) {
     console.warn(info.warnings);
+    console.log('Compilation successful with warnings.');
   }
+  console.log('Compilation successful.');
 }, function(reason) {
   console.error('Compilation failed', reason);
 });

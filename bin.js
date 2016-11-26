@@ -50,7 +50,9 @@ splittable({
 }).then(function(info) {
   if (info.warnings) {
     console.warn(info.warnings);
+    console.log('Compilation successful with warnings.');
   }
+  console.log('Compilation successful.');
 }, function(reason) {
   console.error('Compilation failed: ', reason.message);
   process.exit(1);
