@@ -318,12 +318,26 @@ function findPackageJson(modulePath) {
 var systemImport =
     // Polyfill and/or monkey patch System.import.
     '(self.System=self.System||{}).import=function(n){' +
+    // Always end names in .js
     'n=n.replace(/\\.js$/g,"")+".js";' +
+    // Short circuit if the bundle is already loaded.
     'return (self._S["//"+n]&&Promise.resolve(self._S["//"+n]))' +
+    // Short circuit if we are already loadind, otherwise create
+    // a promise (that will short circuit subsequent requests)
+    // and start loading.
     '||self._S[n]||(self._S[n]=new Promise(function(r,t){' +
+    // Load via a script
     'var s=document.createElement("script");' +
+    // Calculate the source URL using the same algorithms as used
+    // during bundle generation.
     's.src=(self.System.baseURL||".")+"/"+n.replace(/[\\/\\\\]/g,"-");' +
-    's.onerror=t;s.onload=function(){r(self._S["//"+n])};' +
+    // Fail promise on any error.
+    's.onerror=t;' +
+    // On success the trailing module in every bundle will have created
+    // the _S global representing the module object that is the root
+    // of the bundle. Resolve the promise with it.
+    's.onload=function(){r(self._S["//"+n])};' +
+    // Append the script tag.
     '(document.head||document.documentElement).appendChild(s);' +
     '})' +
     ')};\n';
@@ -332,8 +346,14 @@ var systemImport =
 // to be able to see it), but add a little async executor for
 // scheduled functions.
 exports.baseBundleWrapper =
+    // Declaring a few variables that are used in node modules to increase
+    // compatiblity.
+    'self.global=self;' +
+    'self.process=self.process||{env:{NODE_ENV:"production"}};' +
     '%s\n' +
     systemImport +
+    // Runs scheduled non-base bundles in the _S array and overrides
+    // .push to immediately execute incoming bundles.
     '(self._S=self._S||[]).push=function(f){f.call(self)};' +
     '(function(f){while(f=self._S.shift()){f.call(self)}})();\n' +
     '//# sourceMappingURL=%basename%.map\n';

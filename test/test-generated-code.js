@@ -46,6 +46,7 @@ function evalInScope() {
   return {
     console: console,
     children: children,
+    self: self,
   };
 }
 
@@ -66,6 +67,9 @@ function testGeneratedCode(t) {
       + 'loaded a\n';
   var result = evalInScope(base, a, b);
   t.equal(result.console.str, output);
+  t.equal(result.self.process.env.NODE_ENV, 'production');
+  t.equal(result.self, result.self.global);
+
   return Promise.resolve().then(function() {
     t.equal(result.console.str, output + withImport);
 

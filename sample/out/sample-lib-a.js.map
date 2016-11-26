@@ -3,6 +3,6 @@
 "file":"./sample/out/sample-lib-a.js",
 "lineCount":1,
 "mappings":"A,uCAAOA,QAASC,GAAC,EAAG,CAClB,MACEC,SAAW,EAAG,CACZC,OAAAC,IAAA,CAAYH,EAAZ,CADY,CAFE,C,CCAnB,IAAA,GAAA,ECCCE,QAAAC,IAAA,CAAY,UAAZ,CDIFD,QAAAC,IAAA,CDLgBH,ECKJ,EAAZ,CAEAE,QAAAC,IAAA,CAAY,MAAZ,CEHgBC,EFGI,EAApB,CAEgBC,GAAAC,KAAA,CAATC,QAAa,EAAG,CACrBL,OAAAC,IAAA,CAAY,UAAZ,CADqB,C,CGRvB,CAACK,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,mBAA5B,CAAA,CAAiDH;",
-"sources":["sample/lib/e.js","sample/lib/a.js","sample/lib/d.js","sample/lib/c.js","splittable-build/tmp-JxkQE9.js"],
+"sources":["sample/lib/e.js","sample/lib/a.js","sample/lib/d.js","sample/lib/c.js","splittable-build/tmp-4egDvF.js"],
 "names":["e$$module$sample$lib$e","e","constructor","console","log","c","module$sample$lib$a","test","test$$module$sample$lib$a","self"]
 }
