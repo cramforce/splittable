@@ -23,6 +23,7 @@ var devnull = require('dev-null');
 var relativePath = require('path').relative;
 var path = require('path');
 var fs = require('fs');
+var findPackageJsonPath = require('find-root');
 const TopologicalSort = require('topological-sort');
 
 // Override to local closure compiler JAR
@@ -84,6 +85,11 @@ exports.getFlags = function(config) {
 
 exports.getBundleFlags = function(g) {
   var flagsArray = [];
+  var packageCount = 0;
+  Object.keys(g.packages).sort().forEach(function(package) {
+    flagsArray.push('--js', package);
+    packageCount++;
+  });
   // Build up the weird flag structure that closure compiler calls
   // modules and we call bundles.
   var bundleKeys = Object.keys(g.bundles);
@@ -98,6 +104,10 @@ exports.getBundleFlags = function(g) {
     if (!isBase && bundleKeys.length > 1) {
       flagsArray.push('--js', bundleTrailModule(bundle.name));
       extraModules++;
+    }
+    if (packageCount) {
+      extraModules += packageCount;
+      packageCount = 0;
     }
     // Replace directory separator with - in bundle filename
     var name = bundle.name
@@ -159,6 +169,7 @@ exports.getGraph = function(entryModules) {
       },
     },
     moduleRoots: {},
+    packages: {},
   };
   var edges = {};
 
@@ -167,6 +178,8 @@ exports.getGraph = function(entryModules) {
       .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
   // This gets us the actual deps.
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
+    delete row.source;
+    console.log('ROW', row);
     var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
     topo.addNode(id, id);
     var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
@@ -174,20 +187,12 @@ exports.getGraph = function(entryModules) {
       var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
 
       // Non relative module path. Try to find module root.
-      /*if (!/^\./.test(dep)) {
-        var moduleRoot = path.dirname(relPathtoDep);
-        // Index path can be resolved by CC, so go one level up.
-        if (relPathtoDep.endsWith('index')
-            || relPathtoDep.endsWith('index.js')) {
-          moduleRoot = path.dirname(moduleRoot);
+      if (!/^\./.test(dep)) {
+        var packageJson = findPackageJson(depId);
+        if (packageJson) {
+          graph.packages[packageJson] = true;
         }
-        // Go on level up per dir in module name.
-        var dirCount = dep.split(/\//);
-        for (var i = 0; i < dirCount; i++) {
-          moduleRoot = path.dirname(moduleRoot);
-        }
-        graph.moduleRoots[moduleRoot] = true;
-      }*/
+      }
       return relPathtoDep;
     });
     graph.deps[id] = deps;
@@ -281,6 +286,14 @@ function bundleTrailModule(name) {
 
 function unifyPath(id) {
   return id.split(path.sep).join('/');
+}
+
+function findPackageJson(modulePath) {
+  if (modulePath.split(path.sep).indexOf('node_modules') == -1) {
+    return null;
+  }
+  return relativePath(process.cwd(),
+      findPackageJsonPath(modulePath) + '/package.json');
 }
 
 var systemImport =

@@ -35,6 +35,7 @@
     "browserify": "^13.1.1",
     "deps-sort": "^2.0.0",
     "dev-null": "^0.1.1",
+    "find-root": "^1.0.0",
     "google-closure-compiler": "20161024.3.0",
     "minimist": "^1.2.0",
     "through2": "^2.0.1",
