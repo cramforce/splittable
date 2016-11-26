@@ -38,6 +38,16 @@ if (argv['v'] || argv['version']) {
   process.exit(0);
 }
 
+var javaCheck = require('child_process').spawnSync('java', ['-version']);
+if (javaCheck.error) {
+  console.log('Splittable currently requires java to be installed and the ' +
+      'command `java` to work.\n' +
+      'Please install it for now and follow ' +
+      'https://github.com/cramforce/splittable/issues/26 for when java ' +
+      'becomes no longer needed.')
+  process.exit(1);
+}
+
 if (!modules.length) {
   console.log(USAGE);
   process.exit(1);
