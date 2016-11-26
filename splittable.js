@@ -172,45 +172,54 @@ exports.getGraph = function(entryModules) {
     },
     packages: {},
   };
-  var edges = {};
 
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {debug: true, deps: true})
       .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
-  // This gets us the actual deps.
+  // This gets us the actual deps. We collect them in an array, so
+  // we can sort them prior to building the dep tree. Otherwise the tree
+  // will not be stable.
+  var depEntries = [];
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
-    delete row.source;
-    var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
-    topo.addNode(id, id);
-    var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
-      var depId = row.deps[dep];
-      var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
-
-      // Non relative module path. Try to find module root.
-      if (!/^\./.test(dep)) {
-        var packageJson = findPackageJson(depId);
-        if (packageJson) {
-          graph.packages[packageJson] = true;
-        }
-      }
-      return relPathtoDep;
-    });
-    graph.deps[id] = deps;
-    if (row.entry) {
-      graph.depOf[id] = {};
-      graph.depOf[id][id] = true;  // Self edge.
-      deps.forEach(function(dep) {
-        graph.depOf[id][dep] = true;
-      })
-    }
+    row.source = null;  // Release memory
+    depEntries.push(row);
     next();
   }));
+
   b.bundle().on('end', function() {
-    for (var id in edges) {
+    var edges = {};
+    depEntries.sort(function(a, b) {
+      return a.id < b.id;
+    }).forEach(function(row) {
+      var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
+      topo.addNode(id, id);
+      var deps = edges[id] = Object.keys(row.deps).sort().map(function(dep) {
+        var depId = row.deps[dep];
+        var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
+
+        // Non relative module path. Find the package.json.
+        if (!/^\./.test(dep)) {
+          var packageJson = findPackageJson(depId);
+          if (packageJson) {
+            graph.packages[packageJson] = true;
+          }
+        }
+        return relPathtoDep;
+      });
+      graph.deps[id] = deps;
+      if (row.entry) {
+        graph.depOf[id] = {};
+        graph.depOf[id][id] = true;  // Self edge.
+        deps.forEach(function(dep) {
+          graph.depOf[id][dep] = true;
+        })
+      }
+    });
+    Object.keys(edges).sort().forEach(function(id) {
       edges[id].forEach(function(dep) {
         topo.addEdge(id, dep);
       })
-    }
+    });
     graph.sorted = Array.from(topo.sort().keys()).reverse();
 
     setupBundles(graph);
@@ -225,11 +234,11 @@ function setupBundles(graph) {
   // modules depends on them (transitively).
   graph.sorted.forEach(function(id) {
     graph.deps[id].forEach(function(dep) {
-      for (var entry in graph.depOf) {
+      Object.keys(graph.depOf).sort().forEach(function(entry) {
         if (graph.depOf[entry][id]) {
           graph.depOf[entry][dep] = true;
         }
-      }
+      });
     });
   });
 
@@ -239,12 +248,12 @@ function setupBundles(graph) {
     // The bundle a module should go into.
     var dest;
     // Count in how many bundles a modules wants to be.
-    for (var entry in graph.depOf) {
+    Object.keys(graph.depOf).sort().forEach(function(entry) {
       if (graph.depOf[entry][id]) {
         inBundleCount++;
         dest = entry;
       }
-    }
+    })
     console.assert(inBundleCount >= 1,
         'Should be in at least 1 bundle', id);
     // If a module is in more than 1 bundle, it must go into _base.

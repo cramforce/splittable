@@ -124,33 +124,36 @@ t.test('accepts different module input syntax', function(t) {
   });
 });
 
-t.test('module roots', function(t) {
+t.test('packages', function(t) {
   return getGraph(['sample/lib/other-module-root']).then(function(g) {
     jsonEqual(t, g.bundles, {
       "sample/lib/other-module-root.js": {
         "isBase": false,
         "name": "sample/lib/other-module-root.js",
         "modules": [
-          "node_modules/left-pad/index.js",
           "node_modules/d3-array/build/d3-array.js",
           "node_modules/d3-path/build/d3-path.js",
           "node_modules/d3-shape/build/d3-shape.js",
+          "node_modules/left-pad/index.js",
+          "node_modules/promise-pjs/promise.js",
           "sample/lib/other-module-root.js",
         ]
       },
     });
 
     jsonEqual(t, getBundleFlags(g), [
-      "--js", "node_modules/left-pad/index.js",
+      "--js", "node_modules/d3-array/package.json",
+      "--js", "node_modules/d3-path/package.json",
+      "--js", "node_modules/d3-shape/package.json",
+      "--js", "node_modules/left-pad/package.json",
+      "--js", "node_modules/promise-pjs/package.json",
       "--js", "node_modules/d3-array/build/d3-array.js",
       "--js", "node_modules/d3-path/build/d3-path.js",
       "--js", "node_modules/d3-shape/build/d3-shape.js",
+      "--js", "node_modules/left-pad/index.js",
+      "--js", "node_modules/promise-pjs/promise.js",
       "--js", "sample/lib/other-module-root.js",
-      "--module", "sample-lib-other-module-root:5",
-      "--js_module_root", "node_modules/d3-shape/build",
-      "--js_module_root", "node_modules/d3-path/build",
-      "--js_module_root", "node_modules/d3-array/build",
-      "--js_module_root", "node_modules"
+      "--module", "sample-lib-other-module-root:11",
     ]);
   });
 });
@@ -221,7 +224,7 @@ function makeVariableFileNamesConsistent(flagsArray) {
     if (/splittable\.extern\.js$/.test(flagsArray[i])) {
       flagsArray[i] = '$splittable.extern.js';
     }
-    if (/\.tmp$/.test(flagsArray[i])) {
+    if (/splittable-build\/tmp-/.test(flagsArray[i])) {
       flagsArray[i] = '$TMP_FILE';
     }
   }

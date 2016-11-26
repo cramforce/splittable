@@ -2,3 +2,4 @@ node_modules
 npm-debug.log
 test-out
 .DS_Store
+splittable-build
