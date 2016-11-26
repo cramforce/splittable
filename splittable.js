@@ -85,6 +85,10 @@ exports.getFlags = function(config) {
 
 exports.getBundleFlags = function(g) {
   var flagsArray = [];
+
+  // Write all the packages (directories with a package.json) as --js
+  // inputs to the flags. Closure compiler reads the packages to resolve
+  // non-relative module names.
   var packageCount = 0;
   Object.keys(g.packages).sort().forEach(function(package) {
     flagsArray.push('--js', package);
@@ -105,6 +109,7 @@ exports.getBundleFlags = function(g) {
       flagsArray.push('--js', bundleTrailModule(bundle.name));
       extraModules++;
     }
+    // The packages count as inputs to the first module.
     if (packageCount) {
       extraModules += packageCount;
       packageCount = 0;
@@ -130,9 +135,6 @@ exports.getBundleFlags = function(g) {
       }
     }
   });
-  Object.keys(g.moduleRoots).sort().reverse().forEach(function(root) {
-    flagsArray.push('--js_module_root', root);
-  })
   return flagsArray;
 }
 
@@ -168,7 +170,6 @@ exports.getGraph = function(entryModules) {
         modules: [],
       },
     },
-    moduleRoots: {},
     packages: {},
   };
   var edges = {};
@@ -179,7 +180,6 @@ exports.getGraph = function(entryModules) {
   // This gets us the actual deps.
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
     delete row.source;
-    console.log('ROW', row);
     var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
     topo.addNode(id, id);
     var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
@@ -275,7 +275,12 @@ function maybeAddDotJs(id) {
 }
 
 function bundleTrailModule(name) {
-  var tmp = require('tmp').fileSync({ template: './tmp/tmp-XXXXXX.js' });
+  if (!fs.existsSync('./splittable-build')) {
+    fs.mkdirSync('./splittable-build');
+  }
+  var tmp = require('tmp').fileSync({
+    template: './splittable-build/tmp-XXXXXX.js'
+  });
 
   var js = '// Generated code to get module ' + name + '\n' +
       '(self["_S"]=self["_S"]||[])["//' + name + '"]=' +
@@ -288,6 +293,11 @@ function unifyPath(id) {
   return id.split(path.sep).join('/');
 }
 
+/**
+ * Given a module path, return the path to the relevant package.json or
+ * null. Returns null if the module is not inside a node_modules directory.
+ * @return {?string}
+ */
 function findPackageJson(modulePath) {
   if (modulePath.split(path.sep).indexOf('node_modules') == -1) {
     return null;
