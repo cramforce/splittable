@@ -23,7 +23,12 @@ var devnull = require('dev-null');
 var relativePath = require('path').relative;
 var path = require('path');
 var fs = require('fs');
+var findPackageJsonPath = require('find-root');
 const TopologicalSort = require('topological-sort');
+
+// Override to local closure compiler JAR
+ClosureCompiler.JAR_PATH = require.resolve(
+    './third_party/closure-compiler/closure-compiler-1.0-SNAPSHOT.jar');
 
 exports.splittable = function(config) {
 
@@ -80,6 +85,15 @@ exports.getFlags = function(config) {
 
 exports.getBundleFlags = function(g) {
   var flagsArray = [];
+
+  // Write all the packages (directories with a package.json) as --js
+  // inputs to the flags. Closure compiler reads the packages to resolve
+  // non-relative module names.
+  var packageCount = 0;
+  Object.keys(g.packages).sort().forEach(function(package) {
+    flagsArray.push('--js', package);
+    packageCount++;
+  });
   // Build up the weird flag structure that closure compiler calls
   // modules and we call bundles.
   var bundleKeys = Object.keys(g.bundles);
@@ -94,6 +108,11 @@ exports.getBundleFlags = function(g) {
     if (!isBase && bundleKeys.length > 1) {
       flagsArray.push('--js', bundleTrailModule(bundle.name));
       extraModules++;
+    }
+    // The packages count as inputs to the first module.
+    if (packageCount) {
+      extraModules += packageCount;
+      packageCount = 0;
     }
     // Replace directory separator with - in bundle filename
     var name = bundle.name
@@ -116,9 +135,6 @@ exports.getBundleFlags = function(g) {
       }
     }
   });
-  Object.keys(g.moduleRoots).sort().reverse().forEach(function(root) {
-    flagsArray.push('--js_module_root', root);
-  })
   return flagsArray;
 }
 
@@ -154,54 +170,56 @@ exports.getGraph = function(entryModules) {
         modules: [],
       },
     },
-    moduleRoots: {},
+    packages: {},
   };
-  var edges = {};
 
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {debug: true, deps: true})
       .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
-  // This gets us the actual deps.
+  // This gets us the actual deps. We collect them in an array, so
+  // we can sort them prior to building the dep tree. Otherwise the tree
+  // will not be stable.
+  var depEntries = [];
   b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
-    var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
-    topo.addNode(id, id);
-    var deps = edges[id] = Object.keys(row.deps).map(function(dep) {
-      var depId = row.deps[dep];
-      var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
-
-      // Non relative module path. Try to find module root.
-      if (!/^\./.test(dep)) {
-        var moduleRoot = path.dirname(relPathtoDep);
-        // Index path can be resolved by CC, so go one level up.
-        if (relPathtoDep.endsWith('index')
-            || relPathtoDep.endsWith('index.js')) {
-          moduleRoot = path.dirname(moduleRoot);
-        }
-        // Go on level up per dir in module name.
-        var dirCount = dep.split(/\//);
-        for (var i = 0; i < dirCount; i++) {
-          moduleRoot = path.dirname(moduleRoot);
-        }
-        graph.moduleRoots[moduleRoot] = true;
-      }
-      return relPathtoDep;
-    });
-    graph.deps[id] = deps;
-    if (row.entry) {
-      graph.depOf[id] = {};
-      graph.depOf[id][id] = true;  // Self edge.
-      deps.forEach(function(dep) {
-        graph.depOf[id][dep] = true;
-      })
-    }
+    row.source = null;  // Release memory
+    depEntries.push(row);
     next();
   }));
+
   b.bundle().on('end', function() {
-    for (var id in edges) {
+    var edges = {};
+    depEntries.sort(function(a, b) {
+      return a.id < b.id;
+    }).forEach(function(row) {
+      var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
+      topo.addNode(id, id);
+      var deps = edges[id] = Object.keys(row.deps).sort().map(function(dep) {
+        var depId = row.deps[dep];
+        var relPathtoDep = unifyPath(relativePath(process.cwd(), row.deps[dep]));
+
+        // Non relative module path. Find the package.json.
+        if (!/^\./.test(dep)) {
+          var packageJson = findPackageJson(depId);
+          if (packageJson) {
+            graph.packages[packageJson] = true;
+          }
+        }
+        return relPathtoDep;
+      });
+      graph.deps[id] = deps;
+      if (row.entry) {
+        graph.depOf[id] = {};
+        graph.depOf[id][id] = true;  // Self edge.
+        deps.forEach(function(dep) {
+          graph.depOf[id][dep] = true;
+        })
+      }
+    });
+    Object.keys(edges).sort().forEach(function(id) {
       edges[id].forEach(function(dep) {
         topo.addEdge(id, dep);
       })
-    }
+    });
     graph.sorted = Array.from(topo.sort().keys()).reverse();
 
     setupBundles(graph);
@@ -216,11 +234,11 @@ function setupBundles(graph) {
   // modules depends on them (transitively).
   graph.sorted.forEach(function(id) {
     graph.deps[id].forEach(function(dep) {
-      for (var entry in graph.depOf) {
+      Object.keys(graph.depOf).sort().forEach(function(entry) {
         if (graph.depOf[entry][id]) {
           graph.depOf[entry][dep] = true;
         }
-      }
+      });
     });
   });
 
@@ -230,12 +248,12 @@ function setupBundles(graph) {
     // The bundle a module should go into.
     var dest;
     // Count in how many bundles a modules wants to be.
-    for (var entry in graph.depOf) {
+    Object.keys(graph.depOf).sort().forEach(function(entry) {
       if (graph.depOf[entry][id]) {
         inBundleCount++;
         dest = entry;
       }
-    }
+    })
     console.assert(inBundleCount >= 1,
         'Should be in at least 1 bundle', id);
     // If a module is in more than 1 bundle, it must go into _base.
@@ -266,17 +284,35 @@ function maybeAddDotJs(id) {
 }
 
 function bundleTrailModule(name) {
-  var tmp = require('tmp').fileSync();
+  if (!fs.existsSync('./splittable-build')) {
+    fs.mkdirSync('./splittable-build');
+  }
+  var tmp = require('tmp').fileSync({
+    template: './splittable-build/tmp-XXXXXX.js'
+  });
 
   var js = '// Generated code to get module ' + name + '\n' +
       '(self["_S"]=self["_S"]||[])["//' + name + '"]=' +
-      'require("' + name + '")\n';
+      'require("' + relativePath(path.dirname(tmp.name), name) + '")\n';
   fs.writeFileSync(tmp.name, js, 'utf8');
   return relativePath(process.cwd(), tmp.name);
 }
 
 function unifyPath(id) {
   return id.split(path.sep).join('/');
+}
+
+/**
+ * Given a module path, return the path to the relevant package.json or
+ * null. Returns null if the module is not inside a node_modules directory.
+ * @return {?string}
+ */
+function findPackageJson(modulePath) {
+  if (modulePath.split(path.sep).indexOf('node_modules') == -1) {
+    return null;
+  }
+  return relativePath(process.cwd(),
+      findPackageJsonPath(modulePath) + '/package.json');
 }
 
 var systemImport =

@@ -2,7 +2,7 @@
 "version":3,
 "file":"./sample/out/sample-lib-b.js",
 "lineCount":1,
-"mappings":"A,uCAIgBA,ECFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ,CAEAC,KAAAC,OAAAC,OAAA,CAAmB,cAAnB,CAAAC,KAAA,CAAwC,QAAQ,CAACC,CAAD,CAAS,CACvDN,OAAAC,IAAA,CAAY,uBAAZ,CACAK,EAAAC,KAAA,EAFuD,CAAzD,C,CCLA,CAACL,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,mBAA5B,CAAA,CDDCM;",
-"sources":["sample/lib/c.js","sample/lib/b.js","../../../../var/folders/jk/j0ymfl3j6nj3w3k6_ngj7gfh003p7j/T/tmp-577619YIa49zUouB2.tmp"],
-"names":["c","console","log","self","System","import","then","module","test","module$sample$lib$b"]
+"mappings":"A,uCAAC,IAAA,GAAA,ECIeA,GDFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ,CAEAC,KAAAC,OAAAC,OAAA,CAAmB,cAAnB,CAAAC,KAAA,CAAwC,QAAQ,CAACC,CAAD,CAAS,CACvDN,OAAAC,IAAA,CAAY,uBAAZ,CACAK,EAAAC,KAAA,EAFuD,CAAzD,CAKgBC,GAAAD,KAAA,CAATE,QAAa,EAAG,CACrBT,OAAAC,IAAA,CAAY,UAAZ,CADqB,C,CEVvB,CAACC,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,mBAA5B,CAAA,CAAiDM;",
+"sources":["sample/lib/b.js","sample/lib/c.js","splittable-build/tmp-QNNOTx.js"],
+"names":["c","console","log","self","System","import","then","module","test","module$sample$lib$b","test$$module$sample$lib$b"]
 }
