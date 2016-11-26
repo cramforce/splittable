@@ -212,7 +212,7 @@ exports.getGraph = function(entryModules) {
         graph.depOf[id][id] = true;  // Self edge.
         deps.forEach(function(dep) {
           graph.depOf[id][dep] = true;
-        })
+        });
       }
     });
     Object.keys(edges).sort().forEach(function(id) {
@@ -232,7 +232,7 @@ exports.getGraph = function(entryModules) {
 function setupBundles(graph) {
   // For each module, mark them as to whether any of the entry
   // modules depends on them (transitively).
-  graph.sorted.forEach(function(id) {
+  Array.from(graph.sorted).reverse().forEach(function(id) {
     graph.deps[id].forEach(function(dep) {
       Object.keys(graph.depOf).sort().forEach(function(entry) {
         if (graph.depOf[entry][id]) {
@@ -255,7 +255,8 @@ function setupBundles(graph) {
       }
     })
     console.assert(inBundleCount >= 1,
-        'Should be in at least 1 bundle', id);
+        'Should be in at least 1 bundle', id, 'Bundle count',
+        inBundleCount, graph.depOf);
     // If a module is in more than 1 bundle, it must go into _base.
     if (inBundleCount > 1) {
       dest = '_base';
