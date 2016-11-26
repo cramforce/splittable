@@ -30,8 +30,9 @@ splittable({
   if (info.warnings) {
     console.warn(info.warnings);
     console.log('Compilation successful with warnings.');
+  } else {
+    console.log('Compilation successful.');
   }
-  console.log('Compilation successful.');
 }, function(reason) {
   console.error('Compilation failed', reason);
 });
