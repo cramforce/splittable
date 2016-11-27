@@ -7,7 +7,7 @@ node_js:
 script:
   - npm test
   - npm i -g --production
-  - splittable ./sample/lib/a ./sample/lib/b --write-to ./travis-out/
+  - splittable ./sample/lib/a ./sample/lib/b ./sample/lib/react --write-to ./travis-out/
   - splittable -v
   - splittable -h
 cache:
