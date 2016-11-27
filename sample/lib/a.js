@@ -7,6 +7,8 @@ console.log(e());
 
 console.log('in a', c());
 
+console.log(require('./data.json').test);
+
 export function test() {
   console.log('loaded a');
 };

@@ -6,7 +6,7 @@ node_js:
   - "stable"
 script:
   - npm test
-  - npm i -g
+  - npm i -g --production
   - splittable ./sample/lib/a ./sample/lib/b --write-to ./travis-out/
   - splittable -v
   - splittable -h

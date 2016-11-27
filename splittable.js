@@ -191,7 +191,8 @@ exports.getGraph = function(entryModules) {
     depEntries.sort(function(a, b) {
       return a.id < b.id;
     }).forEach(function(row) {
-      var id = unifyPath(maybeAddDotJs(relativePath(process.cwd(), row.id)));
+      var id = unifyPath(exports.maybeAddDotJs(
+          relativePath(process.cwd(), row.id)));
       topo.addNode(id, id);
       var deps = edges[id] = Object.keys(row.deps).sort().map(function(dep) {
         var depId = row.deps[dep];
@@ -277,8 +278,18 @@ function setupBundles(graph) {
   }
 }
 
-function maybeAddDotJs(id) {
-  if (!id.endsWith('.js')) {
+
+var knownExtensions = {
+  js: true,
+  es: true,
+  es6: true,
+  json: true,
+};
+
+exports.maybeAddDotJs = function(id) {
+  var extensionMatch = id.match(/\.([a-zA-Z0-9]+)$/);
+  var extension = extensionMatch ? extensionMatch[1].toLowerCase() : null;
+  if (!knownExtensions[extension]) {
     id += '.js'
   }
   return id;
