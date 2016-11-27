@@ -75,6 +75,8 @@ t.test('module order with 2 modules', function(t) {
       "--js", "$TMP_FILE",
       "--module", "sample-lib-b:2:_base",
       "--module_wrapper", "sample-lib-b:" + splittable.bundleWrapper,
+      "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./",
     ]);
   });
 });
@@ -126,6 +128,9 @@ t.test('accepts different module input syntax', function(t) {
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
       "--module", "sample-lib-b:3",
+      "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
+      "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./"
     ]);
   });
 });
@@ -160,6 +165,10 @@ t.test('packages', function(t) {
       "--js", "node_modules/promise-pjs/promise.js",
       "--js", "sample/lib/other-module-root.js",
       "--module", "sample-lib-other-module-root:11",
+      "--module_wrapper", "sample-lib-other-module-root:" +
+          splittable.defaultWrapper,
+      "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./",
     ]);
   });
 });
@@ -213,16 +222,26 @@ t.test('getFlags', function(t) {
       "--compilation_level", "ADVANCED",
       "--create_source_map", "%outname%.map",
       "--externs", "$splittable.extern.js",
+      "--jscomp_off", "accessControls",
+      "--jscomp_off", "globalThis",
+      "--jscomp_off", "misplacedTypeAnnotation",
+      "--jscomp_off", "nonStandardJsDocs",
+      "--jscomp_off", "suspiciousCode",
+      "--jscomp_off", "uselessCode",
       "--language_in", "ES6",
       "--language_out", "ES5",
       "--module_output_path_prefix", "out/",
       "--new_type_inf", true,
       "--process_common_js_modules", true,
       "--rewrite_polyfills", true,
+      "--source_map_location_mapping", "|/",
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
       "--module", "sample-lib-b:3",
+      "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
+      "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./",
     ]);
   });
 });

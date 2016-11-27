@@ -23,6 +23,7 @@ var devnull = require('dev-null');
 var relativePath = require('path').relative;
 var path = require('path');
 var fs = require('fs');
+var mkpath = require('mkpath');
 var findPackageJsonPath = require('find-root');
 const TopologicalSort = require('topological-sort');
 
@@ -64,17 +65,33 @@ exports.getFlags = function(config) {
     process_common_js_modules: true,
     rewrite_polyfills: true,
     create_source_map: '%outname%.map',
+    source_map_location_mapping: '|/',
     new_type_inf: true,
     language_in: 'ES6',
     language_out: 'ES5',
     module_output_path_prefix: config.writeTo || 'out/',
     externs: path.dirname(module.filename) + '/splittable.extern.js',
+    jscomp_off: [
+      'accessControls',
+      'globalThis',
+      'misplacedTypeAnnotation',
+      'nonStandardJsDocs',
+      'suspiciousCode',
+      'uselessCode',
+    ],
   };
 
   // Turn object into deterministically sorted array.
   var flagsArray = [];
   Object.keys(flags).sort().forEach(function(flag) {
-    flagsArray.push('--' + flag, flags[flag]);
+    var val = flags[flag];
+    if (val instanceof Array) {
+      val.forEach(function(item) {
+        flagsArray.push('--' + flag, item);
+      })
+    } else {
+      flagsArray.push('--' + flag, val);
+    }
   });
 
   return exports.getGraph(config.modules).then(function(g) {
@@ -103,6 +120,9 @@ exports.getBundleFlags = function(g) {
     var bundle = g.bundles[name];
     // In each bundle, first list JS files that belong into it.
     bundle.modules.forEach(function(js) {
+      if (g.transformed[js]) {
+        js = g.transformed[js];
+      }
       flagsArray.push('--js', js);
     });
     if (!isBase && bundleKeys.length > 1) {
@@ -133,8 +153,13 @@ exports.getBundleFlags = function(g) {
         flagsArray.push('--module_wrapper', name + ':' +
             exports.bundleWrapper);
       }
+    } else {
+      flagsArray.push('--module_wrapper', name + ':' +
+            exports.defaultWrapper);
     }
   });
+  flagsArray.push('--js_module_root', './splittable-build/transformed/');
+  flagsArray.push('--js_module_root', './');
   return flagsArray;
 }
 
@@ -171,11 +196,49 @@ exports.getGraph = function(entryModules) {
       },
     },
     packages: {},
+    // Map of original to transformed filename.
+    transformed: {},
   };
 
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {debug: true, deps: true})
-      .transform(babel, {plugins: [require.resolve("babel-plugin-transform-es2015-modules-commonjs")]});
+      // We register 2 separate transforms. The initial stage are
+      // transforms that closure compiler does not support.
+      .transform(babel, {
+        plugins: [
+          require.resolve("babel-plugin-transform-react-jsx"),
+        ]
+      // The second stage are transforms that closure compiler supports
+      // directly and which we don't want to apply during deps finding.
+      }).transform(babel, {
+        plugins: [
+          require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
+        ]
+      });
+
+  // TODO: Replace with proper plugin system.
+  var seenTransform = {};
+  b.on("transform", function(tr) {
+    if (tr instanceof babel) {
+      tr.once("babelify", function(result, filename) {
+        if (seenTransform[filename]) {
+          return;  // We only care about the first transform per file.
+        }
+        seenTransform[filename] = true;
+        // Dirty hack to see if any JSX was actually inserted into doc.
+        if (!/React\.createElement/.test(result.code)) {
+          return;
+        }
+        filename = relativePath(process.cwd(), filename);
+        // Copy transformed code into shadow path. Files in this path
+        // have precedence over regular relative paths.
+        var target = './splittable-build/transformed/' + filename;
+        mkpath.sync(path.dirname(target));
+        fs.writeFileSync(target, result.code);
+        graph.transformed[filename] = target;
+      });
+    }
+  });
   // This gets us the actual deps. We collect them in an array, so
   // we can sort them prior to building the dep tree. Otherwise the tree
   // will not be stable.
@@ -354,14 +417,19 @@ var systemImport =
     '})' +
     ')};\n';
 
+var nodeEmulation = 'self.global=self;' +
+    'self.process=self.process||{env:{NODE_ENV:"production"}};';
+
+exports.defaultWrapper = nodeEmulation + '%s\n' +
+     '//# sourceMappingURL=%basename%.map\n';
+
 // Don't wrap the bundle itself in a closure (other bundles need
 // to be able to see it), but add a little async executor for
 // scheduled functions.
 exports.baseBundleWrapper =
     // Declaring a few variables that are used in node modules to increase
     // compatiblity.
-    'self.global=self;' +
-    'self.process=self.process||{env:{NODE_ENV:"production"}};' +
+    nodeEmulation +
     '%s\n' +
     systemImport +
     // Runs scheduled non-base bundles in the _S array and overrides

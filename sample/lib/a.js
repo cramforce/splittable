@@ -3,7 +3,7 @@ import {d} from './d';
 import {e} from './e';
 
 d();
-console.log(e());
+e();
 
 console.log('in a', c());
 
