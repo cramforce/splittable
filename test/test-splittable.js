@@ -19,6 +19,7 @@ var stringify = require('json-stable-stringify');
 var getGraph = require('../splittable').getGraph;
 var getBundleFlags = require('../splittable').getBundleFlags;
 var getFlags = require('../splittable').getFlags;
+var maybeAddDotJs = require('../splittable').maybeAddDotJs;
 var splittable = require('../splittable');
 
 function jsonEqual(t, a, b, message) {
@@ -52,6 +53,7 @@ t.test('module order with 2 modules', function(t) {
         "modules": [
           "sample/lib/has-only-one-dependency.js",
           "sample/lib/e.js",
+          "sample/lib/data.json",
           "sample/lib/a.js"
         ]
       }
@@ -64,9 +66,10 @@ t.test('module order with 2 modules', function(t) {
       "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
       "--js", "sample/lib/has-only-one-dependency.js",
       "--js", "sample/lib/e.js",
+      "--js", "sample/lib/data.json",
       "--js", "sample/lib/a.js",
       "--js", "$TMP_FILE",
-      "--module", "sample-lib-a:4:_base",
+      "--module", "sample-lib-a:5:_base",
       "--module_wrapper", "sample-lib-a:" + splittable.bundleWrapper,
       "--js", "sample/lib/b.js",
       "--js", "$TMP_FILE",
@@ -186,6 +189,7 @@ t.test('module order with 3 modules', function(t) {
             "modules": [
               "sample/lib/has-only-one-dependency.js",
               "sample/lib/e.js",
+              "sample/lib/data.json",
               "sample/lib/a.js"
             ]
           },
@@ -221,6 +225,18 @@ t.test('getFlags', function(t) {
       "--module", "sample-lib-b:3",
     ]);
   });
+});
+
+t.test('maybeAddDotJs', function(t) {
+  t.equals('./test.js', maybeAddDotJs('./test.js'));
+  t.equals('./test.js', maybeAddDotJs('./test'));
+  // Should this happen?
+  t.equals('./test.xml.js', maybeAddDotJs('./test.xml'));
+  t.equals('./test.JS', maybeAddDotJs('./test.JS'));
+  t.equals('./test.json', maybeAddDotJs('./test.json'));
+  t.equals('./test.es', maybeAddDotJs('./test.es'));
+  t.equals('./test.es6', maybeAddDotJs('./test.es6'));
+  t.end();
 });
 
 function makeVariableFileNamesConsistent(flagsArray) {

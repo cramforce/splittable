@@ -61,6 +61,7 @@ function testGeneratedCode(t) {
       + 'function (){console.log(b)}\n'
       + 'c export\n'
       + 'in a,\n'
+      + 'json\n'
       + 'c export\n'
       + 'in b\n';
   var withImport = 'imported sample/lib/a\n'
@@ -115,6 +116,7 @@ function testImportViaScript(t) {
     + 'function (){console.log(b)}\n'
     + 'c export\n'
     + 'in a,\n'
+    + 'json\n'
     + 'A\n'
     + 'loaded a\n'
     + 'imported sample/lib/a\n'
