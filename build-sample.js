@@ -24,6 +24,7 @@ splittable({
     './sample/lib/b',
     './sample/lib/no-deps',
     './sample/lib/other-module-root',
+    './sample/lib/react',
   ],
   writeTo: './sample/out/',
 }).then(function(info) {
