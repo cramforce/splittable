@@ -3,6 +3,6 @@
 "file":"/./sample/out/sample-lib-b.js",
 "lineCount":1,
 "mappings":"A,uCAAC,IAAA,GAAA,ECIeA,GDFhB,EAEAC,QAAAC,IAAA,CAAY,MAAZ,CAEAC,KAAAC,OAAAC,OAAA,CAAmB,cAAnB,CAAAC,KAAA,CAAwC,QAAQ,CAACC,CAAD,CAAS,CACvDN,OAAAC,IAAA,CAAY,uBAAZ,CACAK,EAAAC,KAAA,EAFuD,CAAzD,CAKgBC,GAAAD,KAAA,CAATE,QAAa,EAAG,CACrBT,OAAAC,IAAA,CAAY,UAAZ,CADqB,C,CEVvB,CAACC,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,mBAA5B,CAAA,CAAiDM;",
-"sources":["/sample/lib/b.js","/sample/lib/c.js","/splittable-build/tmp-tYxrbe.js"],
+"sources":["/sample/lib/b.js","/sample/lib/c.js","/splittable-build/tmp-JlXuh7.js"],
 "names":["c","console","log","self","System","import","then","module","test","module$sample$lib$b","test$$module$sample$lib$b"]
 }

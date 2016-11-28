@@ -24,7 +24,8 @@ var fs = require('fs');
 var USAGE =
     'Usage: splittable [options] path/to/module1.js path/to/module2.js\n\n' +
     'Options:\n' +
-    '  --write-to    Directory to which the output bundles are written.';
+    '  --write-to    Output directory for JS bundles.\n'
+    '  --warnings    Whether to output closure compiler warnings.';
 
 var modules = argv._;
 
@@ -57,6 +58,7 @@ if (!modules.length) {
 splittable({
   modules: modules,
   writeTo: argv['write-to'],
+  warnings: !!argv['warnings'],
 }).then(function(info) {
   if (info.warnings) {
     console.warn(info.warnings);

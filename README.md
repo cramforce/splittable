@@ -25,11 +25,12 @@ Requires java for one dependency to run.
 
 `splittable path/to/module1.js path/to/module2.js`
 
-and optionally specify destination directory for bundles
-
-`splittable path/to/module1.js path/to/module2.js --write-to=dist/`
-
 It is recommended to run splittable from the root directory of your project.
+
+### Options
+
+- `write-to`: Output directory for bundles. Default: `./out/`
+- `warnings`: Whether to show closure compiler warnings. Default: `false`
 
 ## Usage from JS
 
@@ -51,6 +52,11 @@ splittable({
 }, function(reason) {
   console.error('Compilation failed', reason);
 });
+
+### Options
+
+- `writeTo`: Output directory for bundles. Default: `./out/`
+- `warnings`: Whether to show closure compiler warnings. Default: `false`
 
 ```
 

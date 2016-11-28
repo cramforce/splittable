@@ -44,7 +44,7 @@ exports.splittable = function(config) {
       new ClosureCompiler(flagsArray).run(function(exitCode, stdOut, stdErr) {
         if (exitCode == 0) {
           resolve({
-            warnings: stdErr,
+            warnings: config.warnings ? stdErr : null,
           });
         } else {
           reject(
