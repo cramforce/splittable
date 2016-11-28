@@ -10,6 +10,8 @@ Splittable is a next-generation module bundler for JavaScript with support for
 - **extremely efficient** packing of modules.
 - **dead code elimination** (also sometimes called **tree shaking**).
 - **smaller code** for real world projects than all other known module bundlers.
+- **JSX** ([Example](./sample/lib/react-component.js))
+- **NPM modules** ([See instructions](#npm-modules))
 
 ## Usage from the command line
 
@@ -23,9 +25,12 @@ Requires java for one dependency to run.
 
 `splittable path/to/module1.js path/to/module2.js`
 
-and optionally specify destination directory for bundles
+It is recommended to run splittable from the root directory of your project.
 
-`splittable path/to/module1.js path/to/module2.js --write-to=dist/`
+### Options
+
+- `write-to`: Output directory for bundles. Default: `./out/`
+- `warnings`: Whether to show closure compiler warnings. Default: `false`
 
 ## Usage from JS
 
@@ -47,6 +52,11 @@ splittable({
 }, function(reason) {
   console.error('Compilation failed', reason);
 });
+
+### Options
+
+- `writeTo`: Output directory for bundles. Default: `./out/`
+- `warnings`: Whether to show closure compiler warnings. Default: `false`
 
 ```
 
@@ -103,9 +113,16 @@ Splittable is a wrapper around both [**Browserify**](http://browserify.org/), [B
 
 Splittable takes a list of entry modules as its input and then creates bundles for each of them, as well as an additional bundle with the share dependencies.
 
+## NPM modules
+
+(May also apply to other common JS modules.
+
+- `require("module-name")` must be used to load NPM modules. This is even the case inside of ES6 modules.
+- Cyclic dependencies are not supported and cannot be supported by splittable.
+- Some node modules may not be compatible due to differences in the environment.
+
 ## Possible improvements
 
 - Splittable currently pollutes the global scope with lots of symbols, so that they are visible across modules. This could be fixed with `--rename_prefix_namespace` at the trade off of slightly more verbose generated code.
 - Splittable only supports one layer of bundle hierarchy. This can lead to an extremely bloated base bundle. Multiple layers could be supported at the price of greater complexity in several dimensions.
 - Switch Closure Compiler to the JS-only version (cut Java dependency). This requires adding support for code splitting to the JS version.
-

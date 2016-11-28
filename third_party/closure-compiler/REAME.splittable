@@ -3,6 +3,7 @@ at b11c9970d87579ae50cee7dcda771ac726c71867
 
 Reasons to use custom release:
 
+- Turned off property renaming in ADVANCED mode. Otherwise React plugins break.
 - Need c4a104075d40dd2191b45de33d00b79edd45b97e
 - Applied small patch to fix https://github.com/google/closure-compiler/issues/2170
 

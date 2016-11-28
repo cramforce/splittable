@@ -42,7 +42,7 @@ function evalInScope() {
   };
   // Used for global scope in bundle wrapper.
   var self = {};
-  eval(arguments[0] + arguments[1] + arguments[2])
+  eval(arguments[0] + (arguments[1] || '') + (arguments[2] || ''));
   return {
     console: console,
     children: children,
@@ -58,17 +58,16 @@ function testGeneratedCode(t) {
   var output = 'd export\n'
       + 'in c\n'
       + 'd export\n'
-      + 'function (){console.log(b)}\n'
       + 'c export\n'
       + 'in a,\n'
       + 'json\n'
+      + 'production\n'
       + 'c export\n'
       + 'in b\n';
   var withImport = 'imported sample/lib/a\n'
       + 'loaded a\n';
   var result = evalInScope(base, a, b);
   t.equal(result.console.str, output);
-  t.equal(result.self.process.env.NODE_ENV, 'production');
   t.equal(result.self, result.self.global);
 
   return Promise.resolve().then(function() {
@@ -113,10 +112,10 @@ function testImportViaScript(t) {
     + 'c export\n'
     + 'in b\n'
     + 'd export\n'
-    + 'function (){console.log(b)}\n'
     + 'c export\n'
     + 'in a,\n'
     + 'json\n'
+    + 'production\n'
     + 'A\n'
     + 'loaded a\n'
     + 'imported sample/lib/a\n'
@@ -148,4 +147,18 @@ t.test('generated code command line', function(t) {
   child.execSync(
       'node ./bin.js ./sample/lib/a ./sample/lib/b --write-to=test-out/');
   return testGeneratedCode(t);
+});
+
+t.test('react', function(t) {
+  fs.emptyDirSync('test-out/');
+  return splittable({
+    modules: ['./sample/lib/react'],
+    writeTo: 'test-out/',
+  }).then(function(info) {
+    var file = fs.readFileSync('test-out/sample-lib-react.js', 'utf8');
+    var result = evalInScope(file);
+    t.match(result.console.str, /\<h1/);
+    t.match(result.console.str, /Hello/);
+    t.match(result.console.str, /Splittable in React/);
+  });
 });

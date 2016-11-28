@@ -4,7 +4,7 @@ import {one} from './has-only-one-dependency';
 export function e() {
   return class Foo {
     constructor() {
-      console.log(e);
+      console.log('e');
     }
   };
 }
