@@ -118,6 +118,11 @@ exports.getBundleFlags = function(g) {
     var isBase = name == '_base';
     var extraModules = 0;
     var bundle = g.bundles[name];
+    if (isBase || bundleKeys.length == 1) {
+      flagsArray.push('--js', relativePath(process.cwd(),
+          require.resolve('./base.js')));
+      extraModules++;
+    }
     // In each bundle, first list JS files that belong into it.
     bundle.modules.forEach(function(js) {
       if (g.transformed[js]) {
@@ -201,7 +206,11 @@ exports.getGraph = function(entryModules) {
   };
 
   // Use browserify with babel to learn about deps.
-  var b = browserify(entryModules, {debug: true, deps: true})
+  var b = browserify(entryModules, {
+    debug: true,
+    deps: true,
+    detectGlobals: false,
+  })
       // We register 2 separate transforms. The initial stage are
       // transforms that closure compiler does not support.
       .transform(babel, {
@@ -417,8 +426,7 @@ var systemImport =
     '})' +
     ')};\n';
 
-var nodeEmulation = 'self.global=self;' +
-    'self.process=self.process||{env:{NODE_ENV:"production"}};';
+var nodeEmulation = 'self.global=self;';
 
 exports.defaultWrapper = nodeEmulation + '%s\n' +
      '//# sourceMappingURL=%basename%.map\n';

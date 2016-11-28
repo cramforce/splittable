@@ -13,3 +13,4 @@ export function test() {
   console.log('loaded a');
 };
 
+console.log(process.env.NODE_ENV);

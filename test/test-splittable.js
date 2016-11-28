@@ -60,9 +60,10 @@ t.test('module order with 2 modules', function(t) {
     });
 
     jsonEqual(t, makeVariableFileNamesConsistent(getBundleFlags(g)), [
+      "--js", "base.js",
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
-      "--module", "_base:2",
+      "--module", "_base:3",
       "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
       "--js", "sample/lib/has-only-one-dependency.js",
       "--js", "sample/lib/e.js",
@@ -87,8 +88,7 @@ t.test('module order with 2 modules and no overlap', function(t) {
       "_base": {
         "isBase": true,
         "name": "_base",
-        "modules": [
-        ]
+        "modules": []
       },
       "sample/lib/d.js": {
         "isBase": false,
@@ -124,10 +124,11 @@ t.test('accepts different module input syntax', function(t) {
     });
 
     jsonEqual(t, getBundleFlags(g), [
+      "--js", "base.js",
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:3",
+      "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
       "--js_module_root", "./"
@@ -158,13 +159,14 @@ t.test('packages', function(t) {
       "--js", "node_modules/d3-shape/package.json",
       "--js", "node_modules/left-pad/package.json",
       "--js", "node_modules/promise-pjs/package.json",
+      "--js", "base.js",
       "--js", "node_modules/d3-array/build/d3-array.js",
       "--js", "node_modules/d3-path/build/d3-path.js",
       "--js", "node_modules/d3-shape/build/d3-shape.js",
       "--js", "node_modules/left-pad/index.js",
       "--js", "node_modules/promise-pjs/promise.js",
       "--js", "sample/lib/other-module-root.js",
-      "--module", "sample-lib-other-module-root:11",
+      "--module", "sample-lib-other-module-root:12",
       "--module_wrapper", "sample-lib-other-module-root:" +
           splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
@@ -235,10 +237,11 @@ t.test('getFlags', function(t) {
       "--process_common_js_modules", true,
       "--rewrite_polyfills", true,
       "--source_map_location_mapping", "|/",
+      "--js", "base.js",
       "--js", "sample/lib/d.js",
       "--js", "sample/lib/c.js",
       "--js", "sample/lib/b.js",
-      "--module", "sample-lib-b:3",
+      "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
       "--js_module_root", "./",
