@@ -3,6 +3,6 @@
 "file":"/./sample/out/sample-lib-no-deps.js",
 "lineCount":1,
 "mappings":"A,uCAEAA,OAAAC,IAAA,CAAY,SAAAC,SAAA,CAAmB,UAAnB,CAAZ,C,CCDA,CAACC,IAAA,GAAD,CAAYA,IAAA,GAAZ,EAAwB,EAAxB,EAA4B,yBAA5B,CAAA,CDCCC;",
-"sources":["/sample/lib/no-deps.js","/splittable-build/tmp-72KMvx.js"],
+"sources":["/sample/lib/no-deps.js","/splittable-build/tmp-CX2lqO.js"],
 "names":["console","log","endsWith","self","module$sample$lib$no_deps"]
 }

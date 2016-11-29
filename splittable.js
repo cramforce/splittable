@@ -65,7 +65,12 @@ exports.getFlags = function(config) {
     process_common_js_modules: true,
     rewrite_polyfills: true,
     create_source_map: '%outname%.map',
-    source_map_location_mapping: '|/',
+    parse_inline_source_maps: true,
+    apply_input_source_maps: true,
+    source_map_location_mapping: [
+      'splittable-build/transformed/|/',
+      '|/',
+    ],
     new_type_inf: true,
     language_in: 'ES6',
     language_out: 'ES5',
