@@ -1,6 +1,6 @@
 {
   "name": "splittable",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "code splitting",
     "commonjs",
     "es6",
-    "closure compiler"
+    "closure compiler",
+    "JSX"
   ],
   "author": "cramforce",
   "license": "Apache-2.0",

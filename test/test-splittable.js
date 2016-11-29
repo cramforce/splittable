@@ -221,6 +221,7 @@ t.test('getFlags', function(t) {
     }).then(function(flags) {
 
     jsonEqual(t, makeVariableFileNamesConsistent(flags), [
+      "--apply_input_source_maps", true,
       "--compilation_level", "ADVANCED",
       "--create_source_map", "%outname%.map",
       "--externs", "$splittable.extern.js",
@@ -234,8 +235,14 @@ t.test('getFlags', function(t) {
       "--language_out", "ES5",
       "--module_output_path_prefix", "out/",
       "--new_type_inf", true,
+      // If files have been pre-transformed we want those source maps
+      // to be used for the output sourcemap.
+      "--parse_inline_source_maps", true,
       "--process_common_js_modules", true,
       "--rewrite_polyfills", true,
+      // For transformed files, we want to point source maps to the originals
+      // because the maps actually refer to those.
+      "--source_map_location_mapping","splittable-build/transformed/|/",
       "--source_map_location_mapping", "|/",
       "--js", "base.js",
       "--js", "sample/lib/d.js",
