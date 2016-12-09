@@ -21,6 +21,7 @@
   "author": "cramforce",
   "license": "Apache-2.0",
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "bel": "^4.5.1",
     "d3-array": "^1.0.1",
     "d3-shape": "^1.0.3",

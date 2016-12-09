@@ -25,3 +25,24 @@ t.test('module regression: bel', function(t) {
     writeTo: 'test-out/',
   });
 });
+
+t.test('module regression: preact TODO mvc (loaded via submodule)', function(t) {
+  var wdir = process.cwd();
+  process.chdir('./test/module-regression/preact-todomvc/');
+  fs.emptyDirSync('test-out/');
+  return splittable({
+    modules: [
+      './src/index',
+    ],
+    writeTo: 'test-out/',
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        ['transform-react-jsx', { pragma:'h' }]
+      ],
+    }
+  }).catch(function(reason) {
+    process.chdir(wdir);
+    throw reason;
+  });
+});

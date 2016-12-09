@@ -4,6 +4,8 @@ sudo: false # See https://docs.travis-ci.com/user/trusty-ci-environment/
 group: beta
 node_js:
   - "stable"
+before_script:
+  - (cd test/module-regression/preact-todomvc/ && npm i)
 script:
   - npm test
   - npm i -g --production
