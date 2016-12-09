@@ -6,6 +6,11 @@ Reasons to use custom release:
 - Turned off property renaming in ADVANCED mode. Otherwise React plugins break.
 - Need c4a104075d40dd2191b45de33d00b79edd45b97e
 - Applied small patch to fix https://github.com/google/closure-compiler/issues/2170
+- Fixed NPE in CommonJS rewrite path.
+
+## Work remote
+
+https://github.com/google/closure-compiler/pull/2190/files
 
 ```
 diff --git a/src/com/google/javascript/jscomp/deps/ModuleLoader.java b/src/com/google/javascript/jscomp/deps/ModuleLoader.java

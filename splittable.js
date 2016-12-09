@@ -69,6 +69,7 @@ exports.getFlags = function(config) {
     apply_input_source_maps: true,
     source_map_location_mapping: [
       'splittable-build/transformed/|/',
+      'splittable-build/browser/|/',
       '|/',
     ],
     new_type_inf: true,
@@ -127,6 +128,10 @@ exports.getBundleFlags = function(g) {
       flagsArray.push('--js', relativePath(process.cwd(),
           require.resolve('./base.js')));
       extraModules++;
+      Object.keys(g.browserMask).sort().forEach(function(mask) {
+        flagsArray.push('--js', mask);
+        extraModules++;
+      });
     }
     // In each bundle, first list JS files that belong into it.
     bundle.modules.forEach(function(js) {
@@ -169,6 +174,7 @@ exports.getBundleFlags = function(g) {
     }
   });
   flagsArray.push('--js_module_root', './splittable-build/transformed/');
+  flagsArray.push('--js_module_root', './splittable-build/browser/');
   flagsArray.push('--js_module_root', './');
   return flagsArray;
 }
@@ -208,6 +214,7 @@ exports.getGraph = function(entryModules) {
     packages: {},
     // Map of original to transformed filename.
     transformed: {},
+    browserMask: {},
   };
 
   // Use browserify with babel to learn about deps.
@@ -230,9 +237,49 @@ exports.getGraph = function(entryModules) {
         ]
       });
 
+  b.on('package', function(pkg) {
+    if (!pkg.browser) {
+      return;
+    }
+    Object.keys(pkg.browser).sort().forEach(function(entry) {
+      if (/^\./.test(entry)) {
+        throw new Error(
+            'Relative entries in package.json#browser not yet supported: ' +
+            entry + ' [' + pkg.__dirname + '.package.json]');
+      }
+      if (pkg.browser[entry] !== false) {
+        throw new Error(
+            'Only masking of entire modules via false supported in ' +
+            'package.json#browser:' + entry +
+            ' [' + pkg.__dirname + '.package.json]');
+      }
+      var filename =
+          'splittable-build/browser/node_modules/' + entry;
+      var maskedPkg = 'splittable-build/browser/node_modules/' +
+          entry.split('/')[0] + '/package.json';
+      if (!/\//.test(entry)) {
+        filename += '/index';
+      }
+      filename = exports.maybeAddDotJs(filename);
+      if (graph.browserMask[filename]) {
+        return;
+      }
+      graph.browserMask[filename] = true;
+      mkpath.sync(path.dirname(filename));
+      fs.writeFileSync(filename,
+          '// Generated to mask module via package.json#browser.\n' +
+          'module.exports = {};\n');
+      if (graph.browserMask[pkg]) {
+        return;
+      }
+      graph.browserMask[maskedPkg] = true;
+      fs.writeFileSync(maskedPkg,
+          '{"Generated to mask module via package.json#browser":true}\n');
+    });
+  });
   // TODO: Replace with proper plugin system.
   var seenTransform = {};
-  b.on("transform", function(tr) {
+  b.on('transform', function(tr) {
     if (tr instanceof babel) {
       tr.once("babelify", function(result, filename) {
         if (seenTransform[filename]) {

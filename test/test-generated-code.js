@@ -15,7 +15,7 @@
  */
 
 var Promise = require('bluebird');
-var fs = require('fs-extra')
+var fs = require('fs-extra');
 var t = require('tap');
 var splittable = require('../index');
 var child = require('child_process');

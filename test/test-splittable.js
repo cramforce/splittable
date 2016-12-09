@@ -77,6 +77,7 @@ t.test('module order with 2 modules', function(t) {
       "--module", "sample-lib-b:2:_base",
       "--module_wrapper", "sample-lib-b:" + splittable.bundleWrapper,
       "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./splittable-build/browser/",
       "--js_module_root", "./",
     ]);
   });
@@ -131,6 +132,7 @@ t.test('accepts different module input syntax', function(t) {
       "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./splittable-build/browser/",
       "--js_module_root", "./"
     ]);
   });
@@ -170,6 +172,7 @@ t.test('packages', function(t) {
       "--module_wrapper", "sample-lib-other-module-root:" +
           splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./splittable-build/browser/",
       "--js_module_root", "./",
     ]);
   });
@@ -243,6 +246,7 @@ t.test('getFlags', function(t) {
       // For transformed files, we want to point source maps to the originals
       // because the maps actually refer to those.
       "--source_map_location_mapping","splittable-build/transformed/|/",
+      "--source_map_location_mapping","splittable-build/browser/|/",
       "--source_map_location_mapping", "|/",
       "--js", "base.js",
       "--js", "sample/lib/d.js",
@@ -251,6 +255,7 @@ t.test('getFlags', function(t) {
       "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
+      "--js_module_root", "./splittable-build/browser/",
       "--js_module_root", "./",
     ]);
   });
