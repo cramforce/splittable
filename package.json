@@ -4,7 +4,8 @@
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test/*.js",
+    "setup": "git submodule update --init && cd test/module-regression/preact-todomvc/ && npm i"
   },
   "bin": {
     "splittable": "bin.js"
