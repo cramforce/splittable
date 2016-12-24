@@ -30,7 +30,7 @@ function jsonEqual(t, a, b, message) {
 }
 
 t.test('module order with 2 modules', function(t) {
-  return getGraph(['./sample/lib/a', './sample/lib/b']).then(function(g) {
+  return getGraph(['./sample/lib/a', './sample/lib/b'], {}).then(function(g) {
     jsonEqual(t, g.bundles, {
       "_base": {
         "isBase": true,
@@ -61,18 +61,18 @@ t.test('module order with 2 modules', function(t) {
 
     jsonEqual(t, makeVariableFileNamesConsistent(getBundleFlags(g)), [
       "--js", "base.js",
-      "--js", "sample/lib/d.js",
-      "--js", "sample/lib/c.js",
+      "--js", "./splittable-build/transformed/sample/lib/d.js",
+      "--js", "./splittable-build/transformed/sample/lib/c.js",
       "--module", "_base:3",
       "--module_wrapper", "_base:" + splittable.baseBundleWrapper,
-      "--js", "sample/lib/has-only-one-dependency.js",
-      "--js", "sample/lib/e.js",
+      "--js", "./splittable-build/transformed/sample/lib/has-only-one-dependency.js",
+      "--js", "./splittable-build/transformed/sample/lib/e.js",
       "--js", "sample/lib/data.json",
-      "--js", "sample/lib/a.js",
+      "--js", "./splittable-build/transformed/sample/lib/a.js",
       "--js", "$TMP_FILE",
       "--module", "sample-lib-a:5:_base",
       "--module_wrapper", "sample-lib-a:" + splittable.bundleWrapper,
-      "--js", "sample/lib/b.js",
+      "--js", "./splittable-build/transformed/sample/lib/b.js",
       "--js", "$TMP_FILE",
       "--module", "sample-lib-b:2:_base",
       "--module_wrapper", "sample-lib-b:" + splittable.bundleWrapper,
@@ -84,7 +84,7 @@ t.test('module order with 2 modules', function(t) {
 });
 
 t.test('module order with 2 modules and no overlap', function(t) {
-  return getGraph(['./sample/lib/d', './sample/lib/e']).then(function(g) {
+  return getGraph(['./sample/lib/d', './sample/lib/e'], {}).then(function(g) {
     jsonEqual(t, g.bundles, {
       "_base": {
         "isBase": true,
@@ -111,7 +111,7 @@ t.test('module order with 2 modules and no overlap', function(t) {
 });
 
 t.test('accepts different module input syntax', function(t) {
-  return getGraph(['sample/lib/b.js']).then(function(g) {
+  return getGraph(['sample/lib/b.js'], {}).then(function(g) {
     jsonEqual(t, g.bundles, {
       "sample/lib/b.js": {
         "isBase": false,
@@ -126,9 +126,9 @@ t.test('accepts different module input syntax', function(t) {
 
     jsonEqual(t, getBundleFlags(g), [
       "--js", "base.js",
-      "--js", "sample/lib/d.js",
-      "--js", "sample/lib/c.js",
-      "--js", "sample/lib/b.js",
+      "--js", "./splittable-build/transformed/sample/lib/d.js",
+      "--js", "./splittable-build/transformed/sample/lib/c.js",
+      "--js", "./splittable-build/transformed/sample/lib/b.js",
       "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",
@@ -139,7 +139,7 @@ t.test('accepts different module input syntax', function(t) {
 });
 
 t.test('packages', function(t) {
-  return getGraph(['sample/lib/other-module-root']).then(function(g) {
+  return getGraph(['sample/lib/other-module-root'], {}).then(function(g) {
     jsonEqual(t, g.bundles, {
       "sample/lib/other-module-root.js": {
         "isBase": false,
@@ -167,7 +167,7 @@ t.test('packages', function(t) {
       "--js", "node_modules/d3-shape/build/d3-shape.js",
       "--js", "node_modules/left-pad/index.js",
       "--js", "node_modules/promise-pjs/promise.js",
-      "--js", "sample/lib/other-module-root.js",
+      "--js", "./splittable-build/transformed/sample/lib/other-module-root.js",
       "--module", "sample-lib-other-module-root:12",
       "--module_wrapper", "sample-lib-other-module-root:" +
           splittable.defaultWrapper,
@@ -180,7 +180,7 @@ t.test('packages', function(t) {
 
 t.test('module order with 3 modules', function(t) {
   return getGraph(['./sample/lib/a', './sample/lib/b',
-      './sample/lib/no-deps']).then(function(g) {
+      './sample/lib/no-deps'], {}).then(function(g) {
         jsonEqual(t, g.bundles, {
           "_base": {
             "isBase": true,
@@ -249,9 +249,9 @@ t.test('getFlags', function(t) {
       "--source_map_location_mapping","splittable-build/browser/|/",
       "--source_map_location_mapping", "|/",
       "--js", "base.js",
-      "--js", "sample/lib/d.js",
-      "--js", "sample/lib/c.js",
-      "--js", "sample/lib/b.js",
+      "--js", "./splittable-build/transformed/sample/lib/d.js",
+      "--js", "./splittable-build/transformed/sample/lib/c.js",
+      "--js", "./splittable-build/transformed/sample/lib/b.js",
       "--module", "sample-lib-b:4",
       "--module_wrapper", "sample-lib-b:" + splittable.defaultWrapper,
       "--js_module_root", "./splittable-build/transformed/",

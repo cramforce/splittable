@@ -25,3 +25,21 @@ t.test('module regression: bel', function(t) {
     writeTo: 'test-out/',
   });
 });
+
+t.test('custom babel config', function(t) {
+  fs.emptyDirSync('test-out/');
+  return splittable({
+    modules: ['./test/module-regression/custom-babel-config.js'],
+    writeTo: 'test-out/',
+    babel: {
+      presets: [
+        ['es2015', { loose: true, modules: false }],
+        'stage-0'
+      ],
+      plugins: [
+        'transform-object-rest-spread',
+        ['transform-react-jsx', { pragma:'h' }]
+      ],
+    }
+  });
+});

@@ -57,8 +57,28 @@ splittable({
 
 - `writeTo`: Output directory for bundles. Default: `./out/`
 - `warnings`: Whether to show closure compiler warnings. Default: `false`
+- `babel`: (Experimental, feedback appreciated) Allows specifying babel options. By default splittable also reads from your `.babelrc`. Please note, though. We highly recommend turning off transpilation of ES6 modules. Otherwise the generated code will be very poor (splittable compiles ES6 modules at a later stage).
 
+#### Example
+
+```js
+splittable({
+  modules: ['./test/module-regression/custom-babel-config.js'],
+  writeTo: 'test-out/',
+  babel: {
+    presets: [
+      ['es2015', { loose: true, modules: false /* IMPORTANT! */ }],
+      'stage-0'
+    ],
+    plugins: [
+      'transform-object-rest-spread',
+      ['transform-react-jsx', { pragma:'h' }]
+    ],
+  }
+})
 ```
+
+### Generated bundles
 
 The above will write 3 files (plus sourcemaps) to the directory `out`.
 

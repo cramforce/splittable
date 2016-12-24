@@ -100,7 +100,7 @@ exports.getFlags = function(config) {
     }
   });
 
-  return exports.getGraph(config.modules).then(function(g) {
+  return exports.getGraph(config.modules, config).then(function(g) {
     return flagsArray.concat(
         exports.getBundleFlags(g, flagsArray));
   });
@@ -185,7 +185,7 @@ exports.getBundleFlags = function(g) {
  * @return {!Promise<{bundles: !Object}>} A Promise for bundle definitions.
  * @visibleForTesting
  */
-exports.getGraph = function(entryModules) {
+exports.getGraph = function(entryModules, config) {
   var resolve;
   var reject;
   var promise = new Promise(function(res, rej) {
@@ -217,25 +217,31 @@ exports.getGraph = function(entryModules) {
     browserMask: {},
   };
 
+  config.babel = config.babel || {};
+
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {
     debug: true,
     deps: true,
     detectGlobals: false,
   })
-      // We register 2 separate transforms. The initial stage are
-      // transforms that closure compiler does not support.
-      .transform(babel, {
-        plugins: [
-          require.resolve("babel-plugin-transform-react-jsx"),
-        ]
-      // The second stage are transforms that closure compiler supports
-      // directly and which we don't want to apply during deps finding.
-      }).transform(babel, {
-        plugins: [
-          require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
-        ]
-      });
+  // We register 2 separate transforms. The initial stage are
+  // transforms that closure compiler does not support.
+  .transform(babel, {
+    babelrc: !!config.babel.babelrc,
+    plugins: config.babel.plugins || [
+      require.resolve("babel-plugin-transform-react-jsx"),
+    ],
+    presets: config.babel.presets,
+  }).
+  // The second stage are transforms that closure compiler supports
+  // directly and which we don't want to apply during deps finding.
+  transform(babel, {
+    babelrc: false,
+    plugins: [
+      require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
+    ]
+  });
 
   b.on('package', function(pkg) {
     if (!pkg.browser) {
@@ -286,10 +292,6 @@ exports.getGraph = function(entryModules) {
           return;  // We only care about the first transform per file.
         }
         seenTransform[filename] = true;
-        // Dirty hack to see if any JSX was actually inserted into doc.
-        if (!/React\.createElement/.test(result.code)) {
-          return;
-        }
         filename = relativePath(process.cwd(), filename);
         // Copy transformed code into shadow path. Files in this path
         // have precedence over regular relative paths.
@@ -401,7 +403,6 @@ function setupBundles(graph) {
     delete graph.bundles._base;
   }
 }
-
 
 var knownExtensions = {
   js: true,
