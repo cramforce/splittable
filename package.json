@@ -1,11 +1,10 @@
 {
   "name": "splittable",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description": "Module bundler with support for code splitting, ES6 & CommonJS modules.",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js",
-    "setup": "git submodule update --init && cd test/module-regression/preact-todomvc/ && npm i"
+    "test": "tap test/*.js"
   },
   "bin": {
     "splittable": "bin.js"
@@ -23,6 +22,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
+    "babel-preset-stage-0": "^6.16.0",
     "bel": "^4.5.1",
     "d3-array": "^1.0.1",
     "d3-shape": "^1.0.3",

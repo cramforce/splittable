@@ -5,7 +5,6 @@ group: beta
 node_js:
   - "stable"
 script:
-  - npm run setup
   - npm test
   - npm i -g --production
   - splittable ./sample/lib/a ./sample/lib/b ./sample/lib/react --write-to ./travis-out/

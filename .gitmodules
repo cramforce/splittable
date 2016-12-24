@@ -1,3 +1,0 @@
-[submodule "test/module-regression/preact-todomvc"]
-	path = test/module-regression/preact-todomvc
-	url = https://github.com/developit/preact-todomvc.git

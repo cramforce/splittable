@@ -57,8 +57,28 @@ splittable({
 
 - `writeTo`: Output directory for bundles. Default: `./out/`
 - `warnings`: Whether to show closure compiler warnings. Default: `false`
+- `babel`: Allows specifying babel options. By default splittable also reads from your `.babelrc`. Please note, though. We highly recommend turning off transpilation of ES6 modules. Otherwise the generated code will be very poor (splittable compiles ES6 modules at a later stage).
 
+#### Example
+
+```js
+splittable({
+  modules: ['./test/module-regression/custom-babel-config.js'],
+  writeTo: 'test-out/',
+  babel: {
+    presets: [
+      ['es2015', { loose: true, modules: false /* IMPORTANT! */ }],
+      'stage-0'
+    ],
+    plugins: [
+      'transform-object-rest-spread',
+      ['transform-react-jsx', { pragma:'h' }]
+    ],
+  }
+})
 ```
+
+### Generated bundles
 
 The above will write 3 files (plus sourcemaps) to the directory `out`.
 
@@ -126,7 +146,3 @@ Splittable takes a list of entry modules as its input and then creates bundles f
 - Splittable currently pollutes the global scope with lots of symbols, so that they are visible across modules. This could be fixed with `--rename_prefix_namespace` at the trade off of slightly more verbose generated code.
 - Splittable only supports one layer of bundle hierarchy. This can lead to an extremely bloated base bundle. Multiple layers could be supported at the price of greater complexity in several dimensions.
 - Switch Closure Compiler to the JS-only version (cut Java dependency). This requires adding support for code splitting to the JS version.
-
-# Development
-
-After cloning run `npm run setup`. You may also want to globally install tap `npm -g i tap`

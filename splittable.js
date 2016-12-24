@@ -217,6 +217,8 @@ exports.getGraph = function(entryModules, config) {
     browserMask: {},
   };
 
+  config.babel = config.babel || {};
+
   // Use browserify with babel to learn about deps.
   var b = browserify(entryModules, {
     debug: true,
@@ -226,12 +228,16 @@ exports.getGraph = function(entryModules, config) {
   // We register 2 separate transforms. The initial stage are
   // transforms that closure compiler does not support.
   .transform(babel, {
-    plugins: (config.babel && config.babel.plugins) || [
+    babelrc: !!config.babel.babelrc,
+    plugins: config.babel.plugins || [
       require.resolve("babel-plugin-transform-react-jsx"),
-    ]
+    ],
+    presets: config.babel.presets,
+  }).
   // The second stage are transforms that closure compiler supports
   // directly and which we don't want to apply during deps finding.
-  }).transform(babel, {
+  transform(babel, {
+    babelrc: false,
     plugins: [
       require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
     ]
@@ -397,7 +403,6 @@ function setupBundles(graph) {
     delete graph.bundles._base;
   }
 }
-
 
 var knownExtensions = {
   js: true,

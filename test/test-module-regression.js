@@ -26,23 +26,20 @@ t.test('module regression: bel', function(t) {
   });
 });
 
-t.test('module regression: preact TODO mvc (loaded via submodule)', function(t) {
-  var wdir = process.cwd();
-  process.chdir('./test/module-regression/preact-todomvc/');
+t.test('custom babel config', function(t) {
   fs.emptyDirSync('test-out/');
   return splittable({
-    modules: [
-      './src/index',
-    ],
+    modules: ['./test/module-regression/custom-babel-config.js'],
     writeTo: 'test-out/',
     babel: {
+      presets: [
+        ['es2015', { loose: true, modules: false }],
+        'stage-0'
+      ],
       plugins: [
         'transform-object-rest-spread',
         ['transform-react-jsx', { pragma:'h' }]
       ],
     }
-  }).catch(function(reason) {
-    process.chdir(wdir);
-    throw reason;
   });
 });
