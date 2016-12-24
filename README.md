@@ -52,6 +52,7 @@ splittable({
 }, function(reason) {
   console.error('Compilation failed', reason);
 });
+```
 
 ### Options
 
