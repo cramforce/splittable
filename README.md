@@ -57,7 +57,7 @@ splittable({
 
 - `writeTo`: Output directory for bundles. Default: `./out/`
 - `warnings`: Whether to show closure compiler warnings. Default: `false`
-- `babel`: Allows specifying babel options. By default splittable also reads from your `.babelrc`. Please note, though. We highly recommend turning off transpilation of ES6 modules. Otherwise the generated code will be very poor (splittable compiles ES6 modules at a later stage).
+- `babel`: (Experimental, feedback appreciated) Allows specifying babel options. By default splittable also reads from your `.babelrc`. Please note, though. We highly recommend turning off transpilation of ES6 modules. Otherwise the generated code will be very poor (splittable compiles ES6 modules at a later stage).
 
 #### Example
 
