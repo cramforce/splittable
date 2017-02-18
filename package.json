@@ -21,6 +21,9 @@
   "author": "cramforce",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@angular/common": "^2.4.7",
+    "@angular/core": "^2.4.7",
+    "@angular/platform-browser": "github:angular/platform-browser-builds#master-es2015",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-0": "^6.16.0",
@@ -33,7 +36,9 @@
     "promise-pjs": "^1.1.2",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "tap": "^8.0.0"
+    "rxjs": "^5.1.1",
+    "tap": "^8.0.0",
+    "zone.js": "^0.7.7"
   },
   "dependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",

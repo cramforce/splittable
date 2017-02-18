@@ -239,8 +239,13 @@ exports.getGraph = function(entryModules, config) {
   transform(babel, {
     babelrc: false,
     plugins: [
+      require.resolve("babel-plugin-transform-export-extensions"),
       require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
-    ]
+    ],
+    // Also transform node_modules. This should be safe, since we only
+    // do module discovery here.
+    ignore: false,
+    global: true,
   });
 
   b.on('package', function(pkg) {
@@ -290,6 +295,11 @@ exports.getGraph = function(entryModules, config) {
       tr.once("babelify", function(result, filename) {
         if (seenTransform[filename]) {
           return;  // We only care about the first transform per file.
+        }
+        if (filename.indexOf('node_modules/') != -1) {
+          // The only once hack doesn't work with node_modules because
+          // the primary transform is not global.
+          return;
         }
         seenTransform[filename] = true;
         filename = relativePath(process.cwd(), filename);
