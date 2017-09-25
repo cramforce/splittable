@@ -238,9 +238,10 @@ exports.getGraph = function(entryModules, config) {
   // directly and which we don't want to apply during deps finding.
   transform(babel, {
     babelrc: false,
-    plugins: [
+    plugins: Array.isArray(config.babel.plugins) ? config.babel.plugins.concat([
       require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
-    ]
+    ]) : [require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
+]
   });
 
   b.on('package', function(pkg) {
