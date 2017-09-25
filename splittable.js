@@ -238,10 +238,10 @@ exports.getGraph = function(entryModules, config) {
   // directly and which we don't want to apply during deps finding.
   transform(babel, {
     babelrc: false,
-    plugins: Array.isArray(config.babel.plugins) ? config.babel.plugins.concat([
+    plugins: [
       require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
-    ]) : [require.resolve("babel-plugin-transform-es2015-modules-commonjs"),
-]
+      'transform-remove-strict-mode',
+    ]
   });
 
   b.on('package', function(pkg) {
