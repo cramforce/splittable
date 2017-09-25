@@ -228,9 +228,11 @@ exports.getGraph = function(entryModules, config) {
   // We register 2 separate transforms. The initial stage are
   // transforms that closure compiler does not support.
   .transform(babel, {
+    global: true,
     babelrc: !!config.babel.babelrc,
     plugins: config.babel.plugins || [
       require.resolve("babel-plugin-transform-react-jsx"),
+      require.resolve("./babel-plugins/add-module-export/src"),
     ],
     presets: config.babel.presets,
   }).
